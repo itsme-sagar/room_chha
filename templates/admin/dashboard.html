@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mb-4">Admin Dashboard</h3>
+
+<div class="row g-4">
+
+  <div class="row">
+
+  <div class="col-md-4">
+    <a href="/admin/rooms" class="card p-3 shadow text-decoration-none">
+      <h5>Pending Rooms</h5>
+      <p>Rooms waiting for approval</p>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+    <a href="/admin/all-rooms" class="card p-3 shadow text-decoration-none">
+      <h5>All Rooms</h5>
+      <p>View every room in system</p>
+    </a>
+  </div>
+
+  <div class="col-md-4">
+    <a href="/admin/applications" class="card p-3 shadow text-decoration-none">
+      <h5>All Applications</h5>
+      <p>Renter → Room applications</p>
+    </a>
+  </div>
+
+</div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm p-4 h-100">
+      <h5>Pending Rooms</h5>
+      <p class="text-muted">Approve room listings</p>
+      <a href="/admin/rooms" class="btn btn-warning">Review</a>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm p-4 h-100">
+      <h5>All Users</h5>
+      <p class="text-muted">Manage platform users</p>
+      <button class="btn btn-secondary" disabled>Coming Soon</button>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm p-4 h-100">
+      <h5>System Status</h5>
+      <p class="text-muted">Platform overview</p>
+      <button class="btn btn-outline-dark" disabled>OK</button>
+    </div>
+  </div>
+  <div class="alert alert-info">
+  <strong>{{ admin_alerts }}</strong> pending actions need admin review
+  </div>
+
+</div>
+{% endblock %}

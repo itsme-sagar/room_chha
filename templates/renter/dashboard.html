@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mb-4">Find Rooms Anywhere in Nepal</h3>
+
+<!-- SEARCH BAR -->
+<form action="/search" method="GET" class="mb-5">
+  <div class="input-group input-group-lg">
+    <input type="text" name="q" class="form-control"
+           placeholder="Search city or area (Kathmandu, Pokhara...)">
+    <button class="btn btn-primary">Search</button>
+  </div>
+</form>
+
+<!-- CITY CARDS -->
+<div class="row">
+
+  {% set cities = [
+    ("Kathmandu","https://images.unsplash.com/photo-1544717305-2782549b5136"),
+    ("Pokhara","https://images.unsplash.com/photo-1602607281035-2b9c8f3dcb8c"),
+    ("Butwal","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"),
+    ("Bharatpur","https://images.unsplash.com/photo-1503264116251-35a269479413")
+  ] %}
+
+  {% for city, img in cities %}
+  <div class="col-md-3 mb-4">
+    <div class="card shadow-sm h-100 city-card"
+         style="cursor:pointer"
+         onclick="location.href='/rooms/{{ city }}'">
+      <img src="{{ img }}" class="card-img-top"
+           height="160" style="object-fit:cover">
+      <div class="card-body text-center">
+        <h5 class="mb-0">{{ city }}</h5>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+<hr class="my-5">
+
+<div class="row">
+  <div class="col-md-6">
+    <a href="/renter/applications" class="btn btn-outline-success w-100">
+      My Applications
+    </a>
+  </div>
+  <!-- <div class="col-md-6">
+    <a href="/profile" class="btn btn-outline-dark w-100">
+      My Profile
+    </a>
+  </div> -->
+</div>
+{% endblock %}

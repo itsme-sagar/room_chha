@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+
+  <!-- LEFT: ROOMS -->
+  <div class="col-md-9">
+    <h3 class="mb-3">Rooms in {{ city }}</h3>
+
+    <div class="row">
+    {% for r in rooms %}
+      {% set imgs = r.images.split(",") if r.images else [] %}
+
+      <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+
+          {% if imgs %}
+            <img src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
+                 class="card-img-top"
+                 height="180"
+                 style="object-fit:cover">
+          {% else %}
+            <img src="{{ url_for('static', filename='uploads/default_room.png') }}"
+                 class="card-img-top"
+                 height="180"
+                 style="object-fit:cover">
+          {% endif %}
+
+          <div class="card-body">
+            <h5>{{ r.area }}</h5>
+            <p class="mb-1">Rs. {{ r.rent }} / month</p>
+            <small class="text-muted">{{ r.room_type }}</small><br>
+
+            <a href="/room/{{ r.id }}" class="btn btn-outline-primary btn-sm mt-2">
+              View Details
+            </a>
+
+            {% if session.get("role") == "renter" %}
+              <a href="/apply/{{ r.id }}" class="btn btn-success btn-sm mt-2 ms-2">
+                Apply
+              </a>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+    {% else %}
+      <p class="text-muted">No rooms found in {{ city }}.</p>
+    {% endfor %}
+    </div>
+  </div>
+
+  <!-- RIGHT: CITY SWITCH -->
+  <div class="col-md-3">
+    <div class="card shadow-sm p-3 sticky-top" style="top:90px">
+      <h6 class="mb-3">Browse Rooms</h6>
+
+      <div class="city-switch">
+        {% for c in ["Kathmandu","Pokhara","Butwal","Bharatpur"] %}
+          <a href="/rooms/{{ c }}"
+             class="city-chip {% if c == city %}active{% endif %}">
+            {{ c }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

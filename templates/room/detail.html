@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+
+{# --------- PREPARE IMAGE LIST SAFELY --------- #}
+{% set imgs = room.images.split(",") if room.images else [] %}
+
+<div class="row mb-4">
+
+  <!-- LEFT: IMAGE GALLERY -->
+  <div class="col-md-7">
+    <div class="card shadow-sm p-3">
+
+      {% if imgs %}
+        <div class="row">
+          {% for img in imgs %}
+            <div class="col-md-4 mb-3">
+              <img
+                src="{{ url_for('static', filename='uploads/rooms/' + img) }}"
+                class="img-fluid rounded shadow-sm"
+                style="height:200px; object-fit:cover;">
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <img
+          src="{{ url_for('static', filename='uploads/default_room.png') }}"
+          class="img-fluid rounded shadow-sm"
+          style="height:300px; object-fit:cover;">
+      {% endif %}
+
+    </div>
+  </div>
+
+  <!-- RIGHT: ROOM DETAILS -->
+  <div class="col-md-5">
+    <div class="card shadow-sm p-4">
+
+      <span class="badge bg-primary mb-2">{{ room.city }}</span>
+
+      <h3 class="mb-2">{{ room.area }}</h3>
+
+      <h4 class="text-success mb-3">
+        Rs. {{ room.rent }}
+        <small class="text-muted fs-6">/ month</small>
+      </h4>
+
+      <p class="mb-1">
+        <strong>Room Type:</strong> {{ room.room_type }}
+      </p>
+
+      <p class="mb-3">
+        <strong>Facilities:</strong><br>
+        {{ room.facilities or "Not specified" }}
+      </p>
+
+      {% if room.description %}
+        <p class="text-muted">
+          {{ room.description }}
+        </p>
+      {% endif %}
+
+      <hr>
+
+      <!-- OWNER INFO -->
+      <div class="mb-3">
+        <strong>Owner:</strong><br>
+        {{ owner.name }}<br>
+        <small class="text-muted">{{ owner.email }}</small>
+      </div>
+
+      <!-- ACTIONS -->
+      {% if session.get("role") == "renter" %}
+        {% if app_status == "accepted" %}
+          <a href="/chat/{{ room.id }}" class="btn btn-outline-primary w-100">
+            💬 Chat with Owner
+          </a>
+        {% else %}
+          <button class="btn btn-outline-secondary w-100" disabled>
+            Chat available after approval
+          </button>
+        {% endif %}
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

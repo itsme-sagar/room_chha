@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mb-4">Pending Room Approvals</h3>
+
+<div class="row g-4">
+{% for r in rooms %}
+  <div class="col-lg-4 col-md-6">
+
+    <div class="card border-0 shadow-lg h-100">
+
+      <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2"
+           class="card-img-top rounded-top"
+           height="190"
+           style="object-fit:cover">
+
+      <div class="card-body">
+
+        <span class="badge bg-warning mb-2">Pending</span>
+
+        <h5 class="mt-2">{{ r.area }}, {{ r.city }}</h5>
+
+        <p class="mb-1 fw-semibold">Rs. {{ r.rent }} / month</p>
+        <small class="text-muted">{{ r.room_type }}</small>
+
+        <p class="mt-2 text-muted">
+          {{ r.facilities or "No facilities mentioned" }}
+        </p>
+
+      </div>
+
+      <div class="card-footer bg-white border-0 d-flex justify-content-between px-3 pb-3">
+        <a href="/admin/approve-room/{{ r.id }}"
+           class="btn btn-success btn-sm px-4">
+           ✔ Approve
+        </a>
+
+        <a href="/admin/reject-room/{{ r.id }}"
+           class="btn btn-outline-danger btn-sm px-4">
+           ✖ Reject
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+{% else %}
+  <p class="text-muted">No rooms waiting for approval.</p>
+{% endfor %}
+</div>
+
+{% endblock %}

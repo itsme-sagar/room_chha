@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mb-4">Owner Dashboard</h3>
+
+<div class="row g-4">
+
+  <div class="col-md-4">
+    <div class="card shadow-sm p-4 h-100">
+      <h5>Add New Room</h5>
+      <p class="text-muted">List a room for rent</p>
+      <a href="/owner/add-room" class="btn btn-primary">Add Room</a>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm p-4 h-100">
+      <h5>Applications</h5>
+      <p class="text-muted">View renter requests</p>
+      <a href="/owner/applications" class="btn btn-success">View</a>
+    </div>
+  </div>
+
+  <!-- <div class="col-md-4">
+    <div class="card shadow-sm p-4 h-100">
+      <h5>Profile</h5>
+      <p class="text-muted">Manage your account</p>
+      <a href="/profile" class="btn btn-outline-dark">Profile</a>
+    </div>
+  </div> -->
+
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">All Room Applications</h3>
+
+<table class="table table-striped shadow-sm">
+  <thead class="table-dark">
+    <tr>
+      <th>Room</th>
+      <th>Renter</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for app, room, renter in apps %}
+    <tr>
+      <td>{{ room.area }}, {{ room.city }}</td>
+      <td>{{ renter.name }}<br><small>{{ renter.email }}</small></td>
+      <td>
+        {% if app.status == "pending" %}
+          <span class="badge bg-warning">Pending</span>
+        {% elif app.status == "accepted" %}
+          <span class="badge bg-success">Accepted</span>
+        {% else %}
+          <span class="badge bg-danger">Rejected</span>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

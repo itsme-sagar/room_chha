@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+
+    <div class="card shadow-sm p-4">
+      <h4 class="mb-4">Add New Room</h4>
+
+      <form method="POST" enctype="multipart/form-data">
+
+
+        <!-- City -->
+        <div class="mb-3">
+          <label class="form-label">City</label>
+          <select name="city" class="form-control" required>
+            <option value="">Select City</option>
+            <option>Kathmandu</option>
+            <option>Pokhara</option>
+            <option>Butwal</option>
+            <option>Bharatpur</option>
+          </select>
+        </div>
+
+
+        <div class="mb-3">
+            <label class="form-label">Room Images</label>
+            <input type="file"
+                name="images"
+                class="form-control"
+                multiple
+                accept="image/*"
+                required>
+            <small class="text-muted">Upload multiple images</small>
+        </div>
+
+
+
+        <!-- Area -->
+        <div class="mb-3">
+          <label class="form-label">Area / Location</label>
+          <input type="text" name="area" class="form-control" placeholder="e.g. Baneshwor" required>
+        </div>
+
+        <!-- Rent -->
+        <div class="mb-3">
+          <label class="form-label">Monthly Rent (Rs.)</label>
+          <input type="number" name="rent" class="form-control" placeholder="e.g. 8000" required>
+        </div>
+
+        <!-- Room Type -->
+        <div class="mb-3">
+          <label class="form-label">Room Type</label>
+          <select name="room_type" class="form-control" required>
+            <option value="">Select Type</option>
+            <option>Single Room</option>
+            <option>Double Room</option>
+            <option>Flat</option>
+            <option>Shared Room</option>
+          </select>
+        </div>
+
+        <!-- Facilities -->
+        <div class="mb-3">
+          <label class="form-label">Facilities</label>
+          <input type="text" name="facilities" class="form-control"
+                 placeholder="WiFi, Water, Parking, Bathroom">
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <label class="form-label">Description</label>
+          <textarea name="description" rows="4" class="form-control"
+                    placeholder="Describe the room, rules, surroundings..."></textarea>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-end">
+          <button class="btn btn-primary px-4">
+            Add Room
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

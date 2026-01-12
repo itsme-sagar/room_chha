@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center mb-5">
+  <div class="col-md-6">
+    <h1 class="fw-bold">Find Rooms Easily Across Nepal</h1>
+    <p class="text-muted">
+      Search, apply, and rent rooms without brokers.
+    </p>
+  </div>
+  <div class="col-md-6 text-center">
+    <img src="https://cdn-icons-png.flaticon.com/512/619/619153.png"
+         class="img-fluid" width="300">
+  </div>
+</div>
+
+<h4 class="mb-3">Popular Cities</h4>
+
+<div class="row">
+  {% for city in ["Kathmandu","Pokhara","Butwal"] %}
+  <div class="col-md-4">
+    <div class="card shadow-sm p-3 text-center mb-4">
+      <img src="https://cdn-icons-png.flaticon.com/512/69/69524.png"
+           width="80" class="mx-auto mb-3">
+      <h5>{{ city }}</h5>
+      <a href="/rooms/{{ city }}" class="btn btn-primary btn-sm mt-2">
+        View Rooms
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

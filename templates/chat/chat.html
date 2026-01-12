@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+  <!-- Chat Header -->
+  <div class="card-header d-flex align-items-center gap-2">
+    <img
+      src="{{ url_for('static', filename='uploads/' + (chat_user.profile_image or 'default.png')) }}"
+      class="rounded-circle"
+      width="40" height="40"
+      style="object-fit:cover">
+
+    <strong>{{ chat_user.name }}</strong>
+  </div>
+
+  <!-- Messages -->
+  <div class="card-body" style="height: 400px; overflow-y: auto;">
+    {% if messages %}
+      {% for msg, sender in messages %}
+        <div class="mb-2 {% if sender.id == session['user_id'] %}text-end{% endif %}">
+          <div class="d-inline-block p-2 rounded
+               {% if sender.id == session['user_id'] %}
+                 bg-primary text-white
+               {% else %}
+                 bg-light
+               {% endif %}">
+            {{ msg.text }}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted text-center mt-4">
+        No messages yet. Start the conversation 👋
+      </p>
+    {% endif %}
+  </div>
+
+  <!-- Message Input -->
+  <div class="card-footer">
+    <form method="POST" class="d-flex gap-2">
+      <input
+        type="text"
+        name="text"
+        class="form-control"
+        placeholder="Type a message..."
+        required>
+      <button class="btn btn-primary">Send</button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}

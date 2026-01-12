@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-4">All Rooms</h3>
+
+<!-- FILTERS -->
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-4">
+    <select name="city" class="form-select">
+      <option value="">All Cities</option>
+      {% for c in cities %}
+        <option value="{{ c }}" {% if c == selected_city %}selected{% endif %}>
+          {{ c }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <select name="status" class="form-select">
+      <option value="">All Status</option>
+      <option value="approved" {% if selected_status == "approved" %}selected{% endif %}>
+        Approved
+      </option>
+      <option value="pending" {% if selected_status == "pending" %}selected{% endif %}>
+        Pending
+      </option>
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <button class="btn btn-primary w-100">Filter</button>
+  </div>
+</form>
+
+<!-- EXPORT -->
+<a href="/admin/export-rooms" class="btn btn-success mb-3">
+  📁 Export CSV
+</a>
+
+<!-- ROOMS TABLE -->
+<table class="table table-hover shadow-sm">
+  <thead class="table-dark">
+    <tr>
+      <th style="width:140px">Image</th>
+      <th>City</th>
+      <th>Area</th>
+      <th>Rent</th>
+      <th>Owner</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for room, owner in rooms %}
+      {% set imgs = room.images.split(',') if room.images else [] %}
+
+      <tr>
+        <!-- IMAGE -->
+        <td>
+          {% if imgs %}
+            <img
+              src="{{ url_for('static', filename='uploads/' + imgs[0]) }}"
+              class="img-fluid rounded"
+              style="height:80px; width:120px; object-fit:cover;">
+          {% else %}
+            <img
+              src="{{ url_for('static', filename='uploads/default_room.png') }}"
+              class="img-fluid rounded"
+              style="height:80px; width:120px; object-fit:cover;">
+          {% endif %}
+        </td>
+
+        <!-- DETAILS -->
+        <td>{{ room.city }}</td>
+        <td>{{ room.area }}</td>
+        <td>Rs. {{ room.rent }}</td>
+
+        <td>
+          {{ owner.name }}<br>
+          <small class="text-muted">{{ owner.email }}</small>
+        </td>
+
+        <td>
+          {% if room.approved %}
+            <span class="badge bg-success">Approved</span>
+          {% else %}
+            <span class="badge bg-warning">Pending</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="6" class="text-center text-muted">
+          No rooms found
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
