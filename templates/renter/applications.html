@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mb-4">My Room Applications</h3>
+
+{% for app, room in apps %}
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+
+    <div class="row align-items-center">
+
+      <!-- Room Info -->
+      <div class="col-md-5">
+        <h5 class="mb-1">{{ room.area }}, {{ room.city }}</h5>
+        <small class="text-muted">Rs. {{ room.rent }} / month</small>
+      </div>
+
+      <!-- Status -->
+      <div class="col-md-3">
+        {% if app.status == "pending" %}
+          <span class="badge bg-warning">Pending</span>
+        {% elif app.status == "accepted" %}
+          <span class="badge bg-success">Accepted</span>
+        {% else %}
+          <span class="badge bg-danger">Rejected</span>
+        {% endif %}
+      </div>
+
+      <!-- Action -->
+      <div class="col-md-4 text-end">
+        {% if app.status == "pending" %}
+          <small class="text-muted">
+            Waiting for owner response
+          </small>
+
+        {% elif app.status == "accepted" %}
+          <a href="/chat/{{ room.id }}"
+             class="btn btn-primary btn-sm position-relative">
+            Chat
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              New
+            </span>
+          </a>
+
+        {% else %}
+          <small class="text-muted">
+            You can apply to other rooms
+          </small>
+        {% endif %}
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% else %}
+<p>You have not applied to any rooms yet.</p>
+{% endfor %}
+
+{% endblock %}
