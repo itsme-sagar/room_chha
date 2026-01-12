@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <title>Room Chha</title>
@@ -12,101 +12,128 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
   <style>
+    /* ===== THEME VARIABLES ===== */
+    :root {
+      --bg-color: #f5f7fa;
+      --card-bg: #ffffff;
+      --text-color: #000000;
+      --nav-bg: #212529;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #ffffff;
+      --nav-bg: #000000;
+    }
+
     body {
-      background: #f5f7fa;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
     }
-    .navbar-brand {
-      font-weight: 700;
-    }
+
     .card {
+      background: var(--card-bg);
+      color: var(--text-color);
       border-radius: 12px;
+    }
+
+    .navbar {
+      background: var(--nav-bg) !important;
+    }
+
+    .theme-btn {
+      border: none;
+      background: transparent;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
   <div class="container">
 
     <!-- Brand -->
     <a class="navbar-brand" href="/">Room Chha 🇳🇵</a>
 
-    <!-- Right side -->
-    <div class="d-flex align-items-center gap-2">
+    <!-- Mobile Toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      {% if session.get("user_id") %}
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <div class="ms-auto d-flex flex-column flex-lg-row align-items-lg-center gap-2 mt-3 mt-lg-0">
 
-        <!-- Dashboard -->
-        <a class="btn btn-outline-light btn-sm" href="/dashboard">
-          Dashboard
-        </a>
+        <!-- 🌙☀️ THEME TOGGLE -->
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
 
-        <!-- Notifications (ONLY when logged in) -->
-        {% if unread_count > 0 %}
-          <a href="{% if session.get('role') == 'owner' %}/owner/applications{% else %}/renter/applications{% endif %}"
-             class="btn btn-outline-light btn-sm position-relative">
-            🔔
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              {{ unread_count }}
+        {% if session.get("user_id") %}
+
+          <a class="btn btn-outline-light btn-sm" href="/dashboard">Dashboard</a>
+
+          {% if unread_count > 0 %}
+            <a href="{% if session.get('role') == 'owner' %}/owner/applications{% else %}/renter/applications{% endif %}"
+               class="btn btn-outline-light btn-sm position-relative">
+              🔔
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ unread_count }}
+              </span>
+            </a>
+          {% endif %}
+
+          {% if current_user %}
+            <div class="dropdown">
+              <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                 href="#" data-bs-toggle="dropdown">
+
+                <img
+                  src="{{ url_for('static', filename='uploads/' + (current_user.profile_image or 'default.png')) }}"
+                  class="rounded-circle me-2"
+                  width="36" height="36"
+                  style="object-fit:cover">
+
+                <span class="d-none d-lg-inline">{{ current_user.name }}</span>
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/profile">View Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
+              </ul>
+            </div>
+          {% endif %}
+
+        {% else %}
+          <a class="btn btn-outline-light btn-sm" href="/login">Login</a>
+          <a class="btn btn-warning btn-sm" href="/register">Register</a>
+        {% endif %}
+
+        {% if session.get("role") == "admin" and admin_alerts > 0 %}
+          <a href="/admin/dashboard" class="btn btn-warning btn-sm position-relative">
+            ⚠
+            <span class="position-absolute top-0 start-100 translate-middle badge bg-danger">
+              {{ admin_alerts }}
             </span>
           </a>
         {% endif %}
 
-        <!-- Profile Dropdown -->
-        {% if current_user %}
-          <div class="dropdown">
-            <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-               href="#" data-bs-toggle="dropdown" aria-expanded="false">
-
-              <img
-                src="{{ url_for('static', filename='uploads/' + (current_user.profile_image or 'default.png')) }}"
-                class="rounded-circle me-2"
-                width="36" height="36"
-                style="object-fit:cover">
-
-              <span class="d-none d-md-inline">{{ current_user.name }}</span>
-            </a>
-
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li>
-                <a class="dropdown-item" href="/profile">View Profile</a>
-              </li>
-              <li><hr class="dropdown-divider"></li>
-              <li>
-                <a class="dropdown-item text-danger" href="/logout">Logout</a>
-              </li>
-            </ul>
-          </div>
-        {% endif %}
-
-      {% else %}
-
-        <!-- Guest buttons -->
-        <a class="btn btn-outline-light btn-sm" href="/login">Login</a>
-        <a class="btn btn-warning btn-sm" href="/register">Register</a>
-
-      {% endif %}
-
+      </div>
     </div>
   </div>
-
- {% if session.get("role") == "admin" and admin_alerts > 0 %}
-  <a href="/admin/dashboard" class="btn btn-warning btn-sm position-relative">
-    ⚠
-    <span class="position-absolute top-0 start-100 translate-middle badge bg-danger">
-      {{ admin_alerts }}
-    </span>
-  </a>
-{% endif %}
- 
 </nav>
 
 <div class="container mt-4">
 
-  <!-- Flash messages -->
   {% with messages = get_flashed_messages() %}
     {% if messages %}
-      <div class="alert alert-info alert-dismissible fade show" role="alert">
+      <div class="alert alert-info alert-dismissible fade show">
         {{ messages[0] }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
@@ -116,8 +143,29 @@
   {% block content %}{% endblock %}
 </div>
 
-<!-- Bootstrap JS (required for dropdown) -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== THEME SCRIPT ===== -->
+<script>
+  const html = document.documentElement;
+  const icon = document.getElementById("themeIcon");
+
+  function setTheme(theme) {
+    html.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    icon.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+
+  function toggleTheme() {
+    const current = html.getAttribute("data-theme");
+    setTheme(current === "dark" ? "light" : "dark");
+  }
+
+  // Load saved theme
+  const savedTheme = localStorage.getItem("theme") || "light";
+  setTheme(savedTheme);
+</script>
 
 </body>
 </html>
