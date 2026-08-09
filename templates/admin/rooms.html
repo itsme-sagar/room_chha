@@ -1,52 +1,258 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3 class="mb-4">Pending Room Approvals</h3>
 
-<div class="row g-4">
-{% for r in rooms %}
-  <div class="col-lg-4 col-md-6">
+<div class="container-fluid py-4">
 
-    <div class="card border-0 shadow-lg h-100">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-      <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2"
-           class="card-img-top rounded-top"
-           height="190"
-           style="object-fit:cover">
+        <div>
 
-      <div class="card-body">
+            <h2>
+                <i class="bi bi-house-check-fill text-primary"></i>
+                Pending Room Approvals
+            </h2>
 
-        <span class="badge bg-warning mb-2">Pending</span>
+            <p class="text-muted">
+                Review listings before publishing them.
+            </p>
 
-        <h5 class="mt-2">{{ r.area }}, {{ r.city }}</h5>
+        </div>
 
-        <p class="mb-1 fw-semibold">Rs. {{ r.rent }} / month</p>
-        <small class="text-muted">{{ r.room_type }}</small>
+        <span class="badge bg-warning fs-6">
 
-        <p class="mt-2 text-muted">
-          {{ r.facilities or "No facilities mentioned" }}
-        </p>
+            {{ rooms|length }} Pending
 
-      </div>
-
-      <div class="card-footer bg-white border-0 d-flex justify-content-between px-3 pb-3">
-        <a href="/admin/approve-room/{{ r.id }}"
-           class="btn btn-success btn-sm px-4">
-           ✔ Approve
-        </a>
-
-        <a href="/admin/reject-room/{{ r.id }}"
-           class="btn btn-outline-danger btn-sm px-4">
-           ✖ Reject
-        </a>
-      </div>
+        </span>
 
     </div>
 
-  </div>
+    <div class="row g-4">
+
+        {% for r in rooms %}
+
+        {% set imgs = r.images.split(",") if r.images else [] %}
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="admin-room-card">
+
+                <!-- IMAGE -->
+
+                {% if imgs %}
+
+                <img
+                src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
+                class="admin-room-image">
+
+                {% else %}
+
+                <img
+                src="{{ url_for('static', filename='uploads/default_room.png') }}"
+                class="admin-room-image">
+
+                {% endif %}
+
+                <!-- CONTENT -->
+
+                <div class="admin-room-body">
+
+                    <span class="room-status-badge">
+
+                        <i class="bi bi-clock-fill"></i>
+                        Pending Review
+
+                    </span>
+
+                    <h4 class="room-title">
+
+    {{ r.title or r.area }}
+
+</h4>
+
+<p class="text-muted">
+
+    <i class="bi bi-geo-alt-fill"></i>
+
+    {{ r.area }},
+    {{ r.city }}
+
+</p>
+
+                    <p class="text-muted">
+
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                        {{ r.city }}
+
+                    </p>
+
+                    <h5 class="text-primary fw-bold">
+
+    Rs. {{ "{:,}".format(r.rent or 0) }}
+
+    <small class="text-muted">
+        /month
+    </small>
+
+</h5>
+
+                    <div class="room-info-grid">
+
+    <div>
+
+        <i class="bi bi-building"></i>
+
+        {{ r.building_type or r.room_type }}
+
+    </div>
+
+    <div>
+
+        <i class="bi bi-rulers"></i>
+
+        {{ r.room_size or 0 }} sqft
+
+    </div>
+
+    <div>
+
+        <i class="bi bi-people-fill"></i>
+
+        {{ r.room_capacity }}
+
+    </div>
+
+    <div>
+
+        <i class="bi bi-droplet-fill"></i>
+
+        {{ r.bathroom_count }}
+
+    </div>
+
+</div>
+
+                    <div class="facility-preview">
+
+{% if r.facilities %}
+
+    {% for facility in r.facilities.split(",") %}
+
+        <span class="facility-chip">
+
+            {{ facility.strip() }}
+
+        </span>
+
+    {% endfor %}
+
 {% else %}
-  <p class="text-muted">No rooms waiting for approval.</p>
-{% endfor %}
+
+    <span class="facility-chip">
+
+        No Facilities
+
+    </span>
+
+{% endif %}
+
+</div>
+<div class="admin-extra-info mt-3">
+
+    <small>
+
+        <strong>Owner Phone:</strong>
+
+        {{ r.owner_phone or "Not Provided" }}
+
+    </small>
+
+    <br>
+
+    <small>
+
+        <strong>Tenant:</strong>
+
+        {{ r.tenant_preference or "Anyone" }}
+
+    </small>
+
+    <br>
+
+    <small>
+
+        <strong>Gender:</strong>
+
+        {{ r.gender_preference or "Any" }}
+
+    </small>
+
+</div>
+
+                    <!-- ACTIONS -->
+                     <a
+href="/admin/room/{{ r.id }}"
+class="btn btn-primary">
+
+    <i class="bi bi-eye-fill"></i>
+
+    View Details
+
+</a>
+
+                    <div class="admin-room-actions">
+
+                        <a
+                        href="/admin/approve-room/{{ r.id }}"
+                        class="btn btn-success">
+
+                            <i class="bi bi-check-circle-fill"></i>
+                            Approve
+
+                        </a>
+
+                        <a
+                        href="/admin/reject-room/{{ r.id }}"
+                        class="btn btn-outline-danger">
+
+                            <i class="bi bi-x-circle-fill"></i>
+                            Reject
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="col-12">
+
+            <div class="empty-admin-room">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                <h3>
+                    No Pending Rooms
+                </h3>
+
+                <p>
+                    All room listings have been reviewed.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
 </div>
 
 {% endblock %}

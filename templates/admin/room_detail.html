@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% set imgs = room.images.split(",") if room.images else [] %}
+
+<div class="container py-4">
+
+<div class="row">
+
+    <!-- LEFT CONTENT -->
+
+    <div class="col-lg-8">
+
+        {% if imgs %}
+
+<img
+id="mainImage"
+src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
+class="room-hero-img mb-3">
+
+<div class="row">
+
+    {% for img in imgs %}
+
+    <div class="col-3 mb-3">
+
+        <img
+        src="{{ url_for('static', filename='uploads/rooms/' + img) }}"
+        class="thumbnail-img"
+        onclick="changeImage(this.src)">
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<img
+src="{{ url_for('static', filename='uploads/default_room.png') }}"
+class="room-hero-img mb-4">
+
+{% endif %}
+        <div class="detail-card">
+
+            <span class="badge bg-primary">
+                {{ room.city }}
+            </span>
+
+            <h2 class="mt-3">
+                {{ room.area }}
+            </h2>
+
+            <span class="verified-badge">
+
+                <i class="bi bi-patch-check-fill"></i>
+
+                Verified Listing
+
+            </span>
+
+            <p class="text-muted mt-2">
+    {{ room.room_type }}
+</p>
+
+<div class="property-stats mb-4">
+
+    <span class="stat-pill">
+        <i class="bi bi-eye-fill"></i>
+        Popular Listing
+    </span>
+
+    <span class="stat-pill">
+        <i class="bi bi-heart-fill"></i>
+        Saved by Users
+    </span>
+
+    <span class="stat-pill">
+        <i class="bi bi-calendar-check-fill"></i>
+        Available Now
+    </span>
+
+</div>
+
+            <hr>
+
+            <!-- PROPERTY HIGHLIGHTS -->
+
+            <h4 class="mb-4">
+                Property Highlights
+            </h4>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="highlight-box">
+                        <div class="highlight-icon">
+
+                        <i class="bi bi-house-door-fill"></i>
+                        </div>
+                        <div>
+
+                            <small>Room Type</small>
+
+                            <h6>{{ room.room_type }}</h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="highlight-box">
+
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                        <div>
+
+                            <small>Location</small>
+
+                            <h6>{{ room.city }}</h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="highlight-box">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                        <div>
+
+                            <small>Monthly Rent</small>
+
+                            <h6>Rs. {{ room.rent }}</h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="highlight-box">
+
+                        <i class="bi bi-patch-check-fill"></i>
+
+                        <div>
+
+                            <small>Status</small>
+
+                            <h6>Verified</h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FACILITIES -->
+
+            <h4 class="mt-4">
+                Facilities
+            </h4>
+
+            <div class="facility-grid">
+
+                {% if room.facilities %}
+
+                    {% for item in room.facilities.split(",") %}
+
+                    <div class="facility-item">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        {{ item.strip() }}
+
+                    </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <p>
+                        Facilities not specified
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <h4 class="mt-5">
+                Description
+            </h4>
+
+            <p class="text-muted">
+
+                {{ room.description or "No description provided." }}
+
+            </p>
+
+        </div>
+
+        <!-- OWNER CARD -->
+
+        <div class="owner-card-v2 mt-4">
+
+            <div class="owner-top">
+
+                <div class="owner-avatar-v2">
+
+                    {{ owner.name[0] }}
+
+                </div>
+
+                <div>
+
+    <h5 class="mb-1">
+
+        {{ owner.name }}
+
+    </h5>
+
+    {% if owner.verified_owner %}
+
+    <span class="premium-owner-badge">
+
+        <i class="bi bi-patch-check-fill"></i>
+
+        Premium Verified Owner
+        <small class="roomchha-verified-text">
+
+    Verified by RoomChha
+
+</small>
+
+    </span>
+
+    {% else %}
+
+    <span class="normal-owner-badge">
+
+        Normal Verified Owner
+
+    </span>
+
+    {% endif %}
+
+</div>
+
+            </div>
+
+            <hr>
+
+            <p>
+
+                <i class="bi bi-envelope-fill"></i>
+
+                {{ owner.email }}
+
+            </p>
+
+        </div>
+
+        <!-- REVIEWS -->
+
+        <div class="review-box mt-4">
+
+            <h4>
+
+                <i class="bi bi-star-fill text-warning"></i>
+
+                Reviews
+
+            </h4>
+
+            <p class="text-muted">
+
+                No reviews yet.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+
+    <div class="col-lg-4">
+
+        <div class="sticky-card">
+
+            <div class="price-box">
+
+    <small class="text-uppercase">
+        Monthly Rent
+    </small>
+
+    <h2>
+        Rs. {{ room.rent }}
+    </h2>
+
+    <p class="mb-3">
+        Per Month
+    </p>
+
+    <div class="listing-features">
+
+        <div>
+            <i class="bi bi-patch-check-fill text-success"></i>
+            Verified Listing
+        </div>
+
+        <div>
+            <i class="bi bi-shield-check text-primary"></i>
+            Secure Platform
+        </div>
+
+        <div>
+            <i class="bi bi-lightning-charge-fill text-warning"></i>
+            Instant Apply
+        </div>
+
+    </div>
+
+</div>
+
+<div class="detail-card mt-3">
+
+    <h5>
+        Admin Actions
+    </h5>
+
+    <a
+    href="/admin/approve-room/{{ room.id }}"
+    class="btn btn-success w-100">
+
+        <i class="bi bi-check-circle-fill"></i>
+
+        Approve Room
+
+    </a>
+
+    <a
+    href="/admin/reject-room/{{ room.id }}"
+    class="btn btn-danger w-100 mt-2">
+
+        <i class="bi bi-x-circle-fill"></i>
+
+        Reject Room
+
+    </a>
+
+</div>
+
+            <div class="detail-card">
+
+                <a
+                href="/favorite/{{ room.id }}"
+                class="btn btn-outline-danger w-100">
+
+                    <i class="bi bi-heart-fill"></i>
+
+                    Save Room
+
+                </a>
+
+                <a
+                class="btn btn-outline-secondary w-100 mt-2">
+
+                    <i class="bi bi-share-fill"></i>
+
+                    Share Listing
+
+                </a>
+
+                {% if session.get("role") == "renter" %}
+
+                    {% if app_status == "accepted" %}
+
+                    <a
+                    href="/chat/{{ room.id }}"
+                    class="btn btn-success w-100 mt-3">
+
+                        <i class="bi bi-chat-dots-fill"></i>
+
+                        Chat Owner
+
+                    </a>
+
+                    {% else %}
+
+                    <a
+                    href="/apply/{{ room.id }}"
+                    class="btn btn-primary w-100 mt-3">
+
+                        <i class="bi bi-send-fill"></i>
+
+                        Apply Now
+
+                    </a>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+            <div class="detail-card mt-4">
+
+    <h5>
+        Owner Information
+    </h5>
+
+    <p>
+
+        <strong>Name:</strong>
+
+        {{ owner.name }}
+
+    </p>
+
+    <p>
+
+        <strong>Email:</strong>
+
+        {{ owner.email }}
+
+    </p>
+
+    <p>
+
+        <strong>Phone:</strong>
+
+        {{ room.owner_phone }}
+
+    </p>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<script>
+
+function changeImage(src){
+    document.getElementById("mainImage").src = src;
+}
+
+</script>
+
+{% endblock %}

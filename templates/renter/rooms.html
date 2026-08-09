@@ -1,70 +1,545 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
 
-  <!-- LEFT: ROOMS -->
-  <div class="col-md-9">
-    <h3 class="mb-3">Rooms in {{ city }}</h3>
+<div class="container-fluid py-4">
 
-    <div class="row">
-    {% for r in rooms %}
-      {% set imgs = r.images.split(",") if r.images else [] %}
+```
+<!-- HERO SEARCH -->
 
-      <div class="col-md-4">
-        <div class="card shadow-sm mb-4">
+<div class="search-banner mb-5">
 
-          {% if imgs %}
-            <img src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
-                 class="card-img-top"
-                 height="180"
-                 style="object-fit:cover">
-          {% else %}
-            <img src="{{ url_for('static', filename='uploads/default_room.png') }}"
-                 class="card-img-top"
-                 height="180"
-                 style="object-fit:cover">
-          {% endif %}
+    <h1>
+    Find Your Perfect Room
+    <i class="bi bi-house-heart-fill text-warning"></i>
+</h1>
 
-          <div class="card-body">
-            <h5>{{ r.area }}</h5>
-            <p class="mb-1">Rs. {{ r.rent }} / month</p>
-            <small class="text-muted">{{ r.room_type }}</small><br>
+    <p>
+        Browse verified rooms across Nepal.
+    </p>
 
-            <a href="/room/{{ r.id }}" class="btn btn-outline-primary btn-sm mt-2">
-              View Details
-            </a>
+    <form action="/search" method="GET">
 
-            {% if session.get("role") == "renter" %}
-              <a href="/apply/{{ r.id }}" class="btn btn-success btn-sm mt-2 ms-2">
-                Apply
-              </a>
-            {% endif %}
-          </div>
+        <div class="row g-3">
+
+            <div class="col-md-4">
+
+                <input
+                type="text"
+                name="city"
+                class="form-control form-control-lg"
+                placeholder="City">
+
+            </div>
+
+            <div class="col-md-4">
+
+                <input
+                type="text"
+                name="area"
+                class="form-control form-control-lg"
+                placeholder="Area">
+
+            </div>
+
+            <div class="col-md-4">
+
+                <button
+                class="btn btn-primary btn-lg w-100">
+
+                    Search Rooms
+
+                </button>
+
+            </div>
 
         </div>
-      </div>
-    {% else %}
-      <p class="text-muted">No rooms found in {{ city }}.</p>
-    {% endfor %}
-    </div>
-  </div>
 
-  <!-- RIGHT: CITY SWITCH -->
-  <div class="col-md-3">
-    <div class="card shadow-sm p-3 sticky-top" style="top:90px">
-      <h6 class="mb-3">Browse Rooms</h6>
-
-      <div class="city-switch">
-        {% for c in ["Kathmandu","Pokhara","Butwal","Bharatpur"] %}
-          <a href="/rooms/{{ c }}"
-             class="city-chip {% if c == city %}active{% endif %}">
-            {{ c }}
-          </a>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+    </form>
 
 </div>
+
+<!-- CATEGORY TABS -->
+
+<div class="category-tabs">
+
+<a href="/rooms/{{ city }}"
+class="cat-tab">
+All
+</a>
+
+<a href="/rooms/{{ city }}?room_type=Single Room"
+class="cat-tab">
+Single Room
+</a>
+
+<a href="/rooms/{{ city }}?room_type=Double Room"
+class="cat-tab">
+Double Room
+</a>
+
+<a href="/rooms/{{ city }}?room_type=Flat"
+class="cat-tab">
+Flat
+</a>
+
+<a href="/rooms/{{ city }}?room_type=Apartment"
+class="cat-tab">
+Apartment
+</a>
+
+<a href="/rooms/{{ city }}?room_type=Hostel"
+class="cat-tab">
+Hostel
+</a>
+
+<a href="/rooms/{{ city }}?room_type=House"
+class="cat-tab">
+House
+</a>
+
+</div>
+
+</div>
+
+<div class="row">
+
+    <!-- LEFT FILTERS -->
+
+    <div class="col-lg-3">
+
+        <div class="filter-card">
+
+            <h5>Browse Cities</h5>
+
+            <div class="city-list mb-4">
+
+                {% for c in ["Kathmandu","Pokhara","Butwal","Bharatpur"] %}
+
+                <a
+                href="/rooms/{{ c }}"
+                class="city-chip {% if c == city %}active{% endif %}">
+
+                    {{ c }}
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+            <hr>
+
+            <h5 class="mb-4">
+    <i class="bi bi-sliders2"></i>
+    Filters
+</h5>
+
+<form method="GET"
+      action="/rooms/{{ city }}">
+
+    <!-- PRICE -->
+
+    <label class="form-label fw-semibold">
+        <i class="bi bi-currency-exchange"></i>
+        Max Price
+    </label>
+
+    <input
+type="range"
+class="form-range"
+min="1000"
+max="100000"
+step="500"
+value="{{ request.args.get('max_price',100000) }}"
+name="max_price"
+id="priceSlider">
+
+    <div class="d-flex justify-content-between">
+
+        <small>Rs. 1000</small>
+
+        <small id="priceValue">
+            Rs. 100000
+        </small>
+
+    </div>
+
+    <!-- FACILITIES -->
+
+    <label class="form-label mt-4 fw-semibold">
+        <i class="bi bi-building-check"></i>
+        Facilities
+    </label>
+
+    <div class="form-check">
+
+        <input
+class="form-check-input"
+type="checkbox"
+name="wifi"
+value="1"
+{% if request.args.get("wifi") %}checked{% endif %}>
+
+        <label class="form-check-label">
+            <i class="bi bi-wifi"></i>
+            WiFi
+        </label>
+
+    </div>
+
+    <div class="form-check">
+
+        <input
+class="form-check-input"
+type="checkbox"
+name="parking"
+value="1"
+{% if request.args.get("parking") %}checked{% endif %}>
+
+        <label class="form-check-label">
+            <i class="bi bi-p-circle-fill"></i>
+            Parking
+        </label>
+
+    </div>
+
+    <div class="form-check">
+
+        <input
+class="form-check-input"
+type="checkbox"
+name="water"
+value="1"
+{% if request.args.get("water") %}checked{% endif %}>
+
+        <label class="form-check-label">
+            <i class="bi bi-droplet-fill"></i>
+            Water
+        </label>
+
+    </div>
+
+    <div class="filter-actions">
+
+    <button
+    type="submit"
+    class="btn apply-filter-btn">
+
+        <i class="bi bi-funnel-fill"></i>
+        Apply Filters
+
+    </button>
+
+    <div class="filter-footer">
+
+    <a href="/rooms/{{ city }}"
+       class="reset-filter-btn">
+
+        <i class="bi bi-arrow-counterclockwise"></i>
+        Reset
+
+    </a>
+
+    <span class="room-count">
+
+        {{ rooms|length }} rooms
+
+    </span>
+
+</div>
+
+</div>
+
+</form>       
+
+        </div>
+
+    </div>
+
+    <!-- ROOMS -->
+
+    <div class="col-lg-9">
+
+        <div class="results-header">
+
+            <div>
+
+                <h3>
+                    {{ rooms|length }} Rooms Found
+                </h3>
+                <div class="mt-2 mb-3">
+
+    <a href="/follow-city/{{ city }}"
+       class="btn btn-outline-primary btn-sm">
+
+        <i class="bi bi-bell-fill"></i>
+
+        Follow {{ city }}
+
+    </a>
+
+</div>
+
+                <div class="market-stats">
+
+    <div class="stat-pill">
+        <i class="bi bi-house-door-fill"></i>
+        {{ rooms|length }} Rooms
+    </div>
+
+    <div class="stat-pill">
+        <i class="bi bi-stars"></i>
+        Featured
+    </div>
+
+    <div class="stat-pill">
+        <i class="bi bi-patch-check-fill"></i>
+        Verified
+    </div>
+
+</div>
+
+                <p class="text-muted mb-0">
+                    Verified listings in {{ city }}
+                </p>
+
+            </div>
+
+            <select class="form-select sort-select">
+
+                <option>
+                    Newest First
+                </option>
+
+                <option>
+                    Price Low → High
+                </option>
+
+                <option>
+                    Price High → Low
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="row">
+
+            {% for r in rooms %}
+
+            {% set imgs = r.images.split(",") if r.images else [] %}
+
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="modern-room-card">
+
+                    {% if imgs %}
+
+                    <img
+                    src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
+                    class="room-image">
+
+                    {% else %}
+
+                    <img
+                    src="{{ url_for('static', filename='uploads/default_room.png') }}"
+                    class="room-image">
+
+                    {% endif %}
+
+                    <div class="room-content">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <span class="room-type">
+
+                                {{ r.room_type }}
+
+                            </span>
+
+                            <a
+                            href="/favorite/{{ r.id }}"
+                            class="save-btn">
+
+                                <i class="bi bi-heart-fill text-danger fs-3"></i>
+
+                            </a>
+
+                        </div>
+
+                        <h5 class="room-title">
+
+    {{ r.title or r.area }}
+
+</h5>
+
+<p class="room-location">
+
+    <i class="bi bi-geo-alt-fill"></i>
+
+    {{ r.area }},
+    {{ r.city }}
+
+</p>
+
+                        <div class="room-meta">
+
+    <span>
+        <i class="bi bi-door-open-fill"></i>
+{{ r.room_type }}
+    </span>
+
+    <span>
+        <i class="bi bi-geo-alt-fill"></i>
+        {{ r.city }}
+    </span>
+
+</div>
+
+                        <div class="room-specs">
+
+    <span class="room-spec">
+
+        <i class="bi bi-building"></i>
+
+        {{ r.building_type or r.room_type }}
+
+    </span>
+
+    <span class="room-spec">
+
+        <i class="bi bi-rulers"></i>
+
+        {{ r.room_size or 0 }} sqft
+
+    </span>
+
+    <span class="room-spec">
+
+        <i class="bi bi-people-fill"></i>
+
+        {{ r.room_capacity }}
+
+    </span>
+
+    <span class="room-spec">
+
+        <i class="bi bi-droplet-fill"></i>
+
+        {{ r.bathroom_count }}
+
+    </span>
+
+</div>
+
+                        <div class="room-tags">
+
+                            {% if r.featured %}
+
+<span class="featured-tag">
+
+    <i class="bi bi-stars"></i>
+
+    Featured
+
+</span>
+
+{% endif %}
+
+                            <span class="verified-tag">
+                                <i class="bi bi-patch-check-fill"></i>
+        Verified
+                            </span>
+
+                        </div>
+
+                        <h4 class="price-tag">
+
+    Rs. {{ "{:,}".format(r.rent or 0) }}
+
+    <small>/month</small>
+
+</h4>
+{% if r.deposit_amount %}
+
+<p class="deposit-text">
+
+    Deposit:
+    Rs. {{ "{:,}".format(r.deposit_amount) }}
+
+</p>
+
+{% endif %}
+
+                        <div class="d-flex gap-2 mt-3">
+
+                            <a
+                            href="/room/{{ r.id }}"
+                            class="btn btn-outline-primary w-100">
+
+                                <i class="bi bi-eye-fill"></i>
+View
+
+                            </a>
+
+                            {% if session.get("role") == "renter" %}
+
+                            <a
+                            href="/apply/{{ r.id }}"
+                            class="btn btn-success w-100">
+
+                                <i class="bi bi-send-fill"></i>
+Apply
+
+                            </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <div class="text-center py-5">
+
+                <h4>No Rooms Found</h4>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+<script>
+
+const slider =
+document.getElementById("priceSlider");
+
+const value =
+document.getElementById("priceValue");
+
+if(slider){
+
+slider.oninput = function(){
+
+value.innerHTML =
+"Rs. " + this.value;
+
+};
+
+}
+
+</script>
 {% endblock %}

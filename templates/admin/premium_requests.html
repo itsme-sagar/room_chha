@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2>
+
+            <i class="bi bi-stars text-warning"></i>
+
+            Premium Requests
+
+        </h2>
+
+        <p class="text-muted">
+
+            Manage Premium Verified Owner requests.
+
+        </p>
+
+    </div>
+
+    <span class="badge bg-primary">
+
+        {{ requests|length }} Requests
+
+    </span>
+
+</div>
+
+<div class="card shadow-sm border-0">
+
+    <div class="card-body p-0">
+
+        <table class="table table-hover mb-0">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Owner</th>
+
+                    <th>Email</th>
+
+                    <th>Plan</th>
+                    <th>Amount</th>
+
+                    <th>Status</th>
+
+                    <th>Date</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for req, user in requests %}
+
+                <tr>
+
+                    <td>
+
+                        #{{ req.id }}
+
+                    </td>
+
+                    <td>
+
+                        {{ user.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ user.email }}
+
+                    </td>
+
+                    <td>
+
+    <span class="badge bg-warning text-dark">
+
+        {{ req.plan|title }}
+
+    </span>
+
+</td>
+
+<td>
+
+    {% if req.plan == "monthly" %}
+
+        Rs.20
+
+    {% elif req.plan == "yearly" %}
+
+        Rs.199
+
+    {% elif req.plan == "lifetime" %}
+
+        Rs.399
+
+    {% else %}
+
+        -
+
+    {% endif %}
+
+</td>
+
+                    <td>
+
+                        {% if req.status == "pending" %}
+
+                            <span class="badge bg-secondary">
+
+                                Pending
+
+                            </span>
+
+                        {% elif req.status == "approved" %}
+
+                            <span class="badge bg-success">
+
+                                Approved
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Rejected
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ req.created_at.strftime('%d %b %Y') }}
+
+                    </td>
+
+                    <td>
+
+                        {% if req.status == "pending" %}
+
+                        <a
+                        href="/admin/approve-premium/{{ req.id }}"
+                        class="btn btn-success btn-sm">
+
+                            Approve
+
+                        </a>
+
+                        <a
+                        href="/admin/reject-premium/{{ req.id }}"
+                        class="btn btn-danger btn-sm">
+
+                            Reject
+
+                        </a>
+
+                        {% else %}
+
+                        -
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

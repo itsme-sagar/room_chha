@@ -1,0 +1,337 @@
+<!-- While editing code Don't delete this code i added this for future reference. I will add this icon in the future when i will add more payment options. -->
+                <!-- <img
+                src="{{ url_for(
+                'static',
+                filename='qr/khalti.png'
+                ) }}"
+                class="img-fluid"> -->
+
+
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- HEADER -->
+
+    <div class="wallet-header mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+
+                <i class="bi bi-wallet2 text-primary"></i>
+
+                RoomChha Wallet
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Manage wallet balance, premium services and room promotions.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- HERO BALANCE -->
+
+    <div class="wallet-hero">
+
+    <div>
+
+        <span class="wallet-label">
+
+            Available Balance
+
+        </span>
+
+        <h1 class="wallet-balance">
+
+            Rs. {{ wallet.balance }}
+
+        </h1>
+
+        <p>
+
+            Manage deposits, premium upgrades and promotions.
+
+        </p>
+
+        <a
+        href="/owner/wallet/load"
+        class="wallet-load-btn">
+
+            <i class="bi bi-plus-circle-fill"></i>
+
+            Load Money
+
+        </a>
+
+    </div>
+
+    <div class="wallet-icon-circle">
+
+        <i class="bi bi-wallet-fill"></i>
+
+    </div>
+
+</div>
+
+
+    <!-- QUICK STATS -->
+
+    <div class="row g-4 mt-1">
+
+        <div class="col-md-4">
+
+            <div class="wallet-stat-card">
+
+                <i class="bi bi-cash-stack"></i>
+
+                <h5>Balance</h5>
+
+                <h3>Rs. {{ wallet.balance }}</h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="wallet-stat-card">
+
+                <i class="bi bi-shield-check"></i>
+
+                <h5>Premium Status</h5>
+
+                <h3>
+
+                    {% if session.get('verified_owner') %}
+                        Active
+                    {% else %}
+                        Standard
+                    {% endif %}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="wallet-stat-card">
+
+                <i class="bi bi-clock-history"></i>
+
+                <h5>Transactions</h5>
+
+                <h3>{{ transactions|length }}</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SERVICES -->
+
+    <div class="row mt-4 g-4">
+
+        <div class="col-lg-6">
+
+            <div class="service-card premium-service">
+
+                <div class="service-icon">
+
+                    ⭐
+
+                </div>
+
+                <h4>
+
+                    Premium Verified Owner
+
+                </h4>
+
+                <p>
+
+                    Build trust and stand out from other owners.
+
+                </p>
+
+                <ul>
+
+                    <li>Monthly - Rs.20</li>
+                    <li>Yearly - Rs.199</li>
+                    <li>Lifetime - Rs.399</li>
+
+                </ul>
+
+                <a href="/premium"
+                   class="btn btn-light">
+
+                    Upgrade Now
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6">
+
+            <div class="service-card featured-service">
+
+                <div class="service-icon">
+
+                    🚀
+
+                </div>
+
+                <h4>
+
+                    Feature Room
+
+                </h4>
+
+                <p>
+
+                    Get priority visibility on homepage.
+
+                </p>
+
+                <ul>
+
+                    <li>Featured for 7 Days</li>
+                    <li>Rs.299 Per Room</li>
+
+                </ul>
+
+                <a href="/owner/rooms"
+                   class="btn btn-dark">
+                   <i class="bi bi-stars"></i>
+                    Select Room To Promote
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <a
+    href="/owner/wallet/load"
+    class="wallet-action-card">
+
+        <i class="bi bi-wallet2"></i>
+
+        <h5>
+
+            Load Money
+
+        </h5>
+
+        <p>
+
+            Add funds to wallet.
+
+        </p>
+
+    </a>
+
+    </div>
+
+    
+    <!-- TRANSACTIONS -->
+
+    <div class="wallet-card mt-4">
+
+        <h4 class="mb-4">
+
+            <i class="bi bi-clock-history"></i>
+
+            Transaction History
+
+        </h4>
+
+        <table class="table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>Amount</th>
+                    <th>Transaction ID</th>
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for txn in transactions %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+
+                            Rs. {{ txn.amount }}
+
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        {{ txn.transaction_code }}
+
+                    </td>
+
+                    <td>
+
+                        {% if txn.status == "approved" %}
+
+                        <span class="badge bg-success">
+
+                            Approved
+
+                        </span>
+
+                        {% elif txn.status == "pending" %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            Pending
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Rejected
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

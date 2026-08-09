@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+<!-- HEADER -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold">
+
+            <i class="bi bi-chat-dots-fill text-primary"></i>
+
+            Messages
+
+        </h2>
+
+        <p class="text-muted mb-0">
+
+            Chat with room owners and renters
+
+        </p>
+
+    </div>
+
+    <span class="badge bg-primary fs-6">
+
+        {{ conversations|length }} Conversations
+
+    </span>
+
+</div>
+
+<!-- SEARCH -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <div class="input-group">
+
+            <span class="input-group-text bg-white border-end-0">
+
+                <i class="bi bi-search"></i>
+
+            </span>
+
+            <input
+            type="text"
+            class="form-control border-start-0"
+            placeholder="Search conversations...">
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CONVERSATIONS -->
+
+{% if conversations %}
+
+    {% for room, user, last_msg in conversations %}
+
+    <div class="conversation-card">
+
+        <div class="d-flex align-items-center">
+
+            <!-- PROFILE -->
+
+            {% if user.profile_image %}
+
+            <img
+            src="{{ url_for('static',
+            filename='uploads/profiles/' + user.profile_image) }}"
+            class="conversation-avatar">
+
+            {% else %}
+
+            <img
+            src="{{ url_for('static',
+            filename='uploads/profiles/default.png') }}"
+            class="conversation-avatar">
+
+            {% endif %}
+
+            <!-- INFO -->
+
+            <div class="flex-grow-1 ms-3">
+
+                <div class="d-flex justify-content-between">
+
+                    <div class="d-flex align-items-center gap-2">
+
+    <h5 class="mb-1">
+
+        {{ user.name }}
+
+    </h5>
+
+    {% if user.role == "owner" %}
+
+        {% if user.verified_owner %}
+
+        <span class="premium-owner-badge">
+
+            <i class="bi bi-patch-check-fill"></i>
+
+            Premium Verified
+
+        </span>
+
+        {% else %}
+
+        <span class="normal-owner-badge">
+
+            Verified Owner
+
+        </span>
+
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+                    <small class="text-muted">
+
+                        {% if last_msg %}
+                            {{ last_msg.created_at.strftime('%d %b') }}
+                        {% endif %}
+
+                    </small>
+
+                </div>
+
+                <small class="text-muted">
+
+                    <i class="bi bi-house-door-fill"></i>
+
+                    {{ room.area }},
+                    {{ room.city }}
+
+                </small>
+                {% if user.role == "owner"
+      and user.verified_owner %}
+
+<div>
+
+    <small class="roomchha-verified-text">
+
+        Verified by RoomChha
+
+    </small>
+
+</div>
+
+{% endif %}
+
+                <div class="mt-1">
+
+                    {% if last_msg %}
+
+                    <span class="last-message">
+
+                        {{ last_msg.text[:60] }}
+
+                        {% if last_msg.text|length > 60 %}
+                        ...
+                        {% endif %}
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="text-muted">
+
+                        No messages yet
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <!-- ACTION -->
+
+            <div class="text-end">
+
+                <a
+                href="/chat/{{ room.id }}"
+                class="btn btn-primary">
+
+                    <i class="bi bi-chat-fill"></i>
+
+                    Chat
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div class="empty-inbox">
+
+    <i class="bi bi-chat-square-dots-fill"></i>
+
+    <h3>No Conversations Yet</h3>
+
+    <p>
+
+        Once a room application is accepted,
+        your chats will appear here.
+
+    </p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,23 +1,233 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<div class="row justify-content-center">
-  <div class="col-md-6 text-center">
+<div class="container py-5">
 
-    <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}"
-         class="rounded-circle mb-3"
-         width="120" height="120"
-         style="object-fit:cover">
+    <!-- PROFILE HERO -->
 
-    <h4>{{ user.name }}</h4>
-    <p class="text-muted">{{ user.email }}</p>
+    <div class="profile-hero">
 
-    <form method="POST" enctype="multipart/form-data">
-      <input type="file" name="photo" class="form-control mb-2" required>
-      <button class="btn btn-primary btn-sm">Update Photo</button>
-    </form>
+        <div class="profile-cover"></div>
 
-  </div>
+        <div class="profile-content">
+
+            <img
+            src="{{ url_for('static', filename='uploads/' + user.profile_image) }}"
+            class="profile-avatar">
+
+            <h2 class="profile-name">
+
+                {{ user.name }}
+
+            </h2>
+
+            <p class="profile-email">
+
+                {{ user.email }}
+
+            </p>
+
+            <div class="profile-role">
+
+                <i class="bi bi-person-badge-fill"></i>
+
+                {{ user.role|title }}
+
+            </div>
+
+            {% if user.role == "owner" %}
+
+                {% if user.verified_owner %}
+
+                <div class="premium-status-card">
+
+                    <div class="premium-icon-wrapper">
+
+                        <i class="bi bi-patch-check-fill"></i>
+
+                    </div>
+
+                    <div class="premium-details">
+
+                        <h5>
+
+                            Premium Verified Owner
+
+                        </h5>
+
+                        <div class="verified-by-roomchha">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            Verified by RoomChha
+
+                        </div>
+
+                        <div class="premium-plan-info">
+
+                            <span class="premium-plan-badge">
+
+                                {{ user.premium_plan|title }}
+
+                            </span>
+
+                        </div>
+
+                        {% if user.premium_plan == "lifetime" %}
+
+<div class="premium-expiry success">
+
+    <i class="bi bi-infinity"></i>
+
+    Never Expires
+
+</div>
+
+{% elif user.premium_until %}
+
+<div class="premium-expiry">
+
+    <i class="bi bi-calendar-check"></i>
+
+    Expires:
+    {{ user.premium_until.strftime('%d %b %Y') }}
+
+</div>
+
+{% else %}
+
+<div class="premium-expiry">
+
+    <i class="bi bi-clock"></i>
+
+    Expiry date not set
+
+</div>
+
+{% endif %}
+
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="normal-status-card">
+
+                    <i class="bi bi-person-check-fill"></i>
+
+                    Verified Owner
+
+                </div>
+
+                <a
+                href="/premium"
+                class="btn btn-warning premium-upgrade-btn">
+
+                    <i class="bi bi-stars"></i>
+
+                    Upgrade To Premium Verified
+
+                </a>
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+
+            <div class="profile-stat-card">
+
+                <i class="bi bi-person-fill"></i>
+
+                <h4>{{ user.role|title }}</h4>
+
+                <span>Account Type</span>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="profile-stat-card">
+
+                <i class="bi bi-shield-check"></i>
+
+                <h4>
+
+                    {% if user.verified_owner %}
+                        Verified
+                    {% else %}
+                        Standard
+                    {% endif %}
+
+                </h4>
+
+                <span>Status</span>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="profile-stat-card">
+
+                <i class="bi bi-envelope-fill"></i>
+
+                <h4>Email</h4>
+
+                <span>Verified Contact</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PHOTO UPDATE -->
+
+    <div class="profile-upload-card mt-5">
+
+        <h4>
+
+            <i class="bi bi-camera-fill"></i>
+
+            Update Profile Photo
+
+        </h4>
+
+        <form
+        method="POST"
+        enctype="multipart/form-data">
+
+            <input
+            type="file"
+            name="photo"
+            class="form-control mb-3"
+            required>
+
+            <button
+            class="btn btn-primary">
+
+                Upload New Photo
+
+            </button>
+
+        </form>
+
+    </div>
+
 </div>
 
 {% endblock %}

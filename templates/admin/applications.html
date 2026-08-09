@@ -1,34 +1,171 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3 class="mb-4">All Room Applications</h3>
+<div class="container-fluid py-4">
 
-<table class="table table-striped shadow-sm">
-  <thead class="table-dark">
-    <tr>
-      <th>Room</th>
-      <th>Renter</th>
-      <th>Status</th>
-    </tr>
-  </thead>
+    <!-- HEADER -->
 
-  <tbody>
-  {% for app, room, renter in apps %}
-    <tr>
-      <td>{{ room.area }}, {{ room.city }}</td>
-      <td>{{ renter.name }}<br><small>{{ renter.email }}</small></td>
-      <td>
-        {% if app.status == "pending" %}
-          <span class="badge bg-warning">Pending</span>
-        {% elif app.status == "accepted" %}
-          <span class="badge bg-success">Accepted</span>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2>
+                <i class="bi bi-file-earmark-check-fill text-primary"></i>
+                All Applications
+            </h2>
+
+            <p class="text-muted">
+                Monitor renter applications across the platform.
+            </p>
+
+        </div>
+
+        <span class="badge bg-primary fs-6">
+
+            {{ apps|length }} Applications
+
+        </span>
+
+    </div>
+
+    <!-- APPLICATIONS GRID -->
+
+    <div class="row g-4">
+
+        {% for app, room, renter in apps %}
+
+        <div class="col-lg-6">
+
+            <div class="admin-application-card">
+
+                <div class="application-top">
+
+                    <div>
+
+                        <h5 class="mb-1">
+
+                            {{ room.area }}
+
+                        </h5>
+
+                        <small class="text-muted">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+                            {{ room.city }}
+
+                        </small>
+
+                    </div>
+
+                    {% if app.status == "pending" %}
+
+                    <span class="app-status pending">
+
+                        <i class="bi bi-clock-fill"></i>
+                        Pending
+
+                    </span>
+
+                    {% elif app.status == "accepted" %}
+
+                    <span class="app-status approved">
+
+                        <i class="bi bi-patch-check-fill"></i>
+                        Approved
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="app-status rejected">
+
+                        <i class="bi bi-x-circle-fill"></i>
+                        Rejected
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+                <hr>
+
+                <!-- RENTER -->
+
+                <div class="renter-box">
+
+                    <div class="renter-avatar-admin">
+
+                        {{ renter.name[0] }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+
+                            {{ renter.name }}
+
+                        </strong>
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ renter.email }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="application-info">
+
+                    <div>
+
+                        <i class="bi bi-house-door-fill"></i>
+                        {{ room.room_type }}
+
+                    </div>
+
+                    <div>
+
+                        <i class="bi bi-cash-stack"></i>
+                        Rs. {{ room.rent }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
         {% else %}
-          <span class="badge bg-danger">Rejected</span>
-        {% endif %}
-      </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+
+        <div class="col-12">
+
+            <div class="empty-admin-apps">
+
+                <i class="bi bi-inbox-fill"></i>
+
+                <h3>
+                    No Applications Found
+                </h3>
+
+                <p>
+                    Applications will appear here.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
 
 {% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="edit-room-page">
+
+    <div class="edit-room-card">
+
+        <div class="edit-header">
+
+            <h1>
+                ✏️ Edit Room
+            </h1>
+
+            <p>
+                Update your room information.
+            </p>
+
+        </div>
+
+        <form method="POST">
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        City
+                    </label>
+
+                    <input
+                    type="text"
+                    name="city"
+                    class="form-control"
+                    value="{{ room.city }}"
+                    required>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Area
+                    </label>
+
+                    <input
+                    type="text"
+                    name="area"
+                    class="form-control"
+                    value="{{ room.area }}"
+                    required>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Rent
+                    </label>
+
+                    <input
+                    type="number"
+                    name="rent"
+                    class="form-control"
+                    value="{{ room.rent }}"
+                    required>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Room Type
+                    </label>
+
+                    <select
+                    name="room_type"
+                    class="form-select">
+
+                        <option
+                        {% if room.room_type=="Single Room" %}
+                        selected
+                        {% endif %}>
+                            Single Room
+                        </option>
+
+                        <option
+                        {% if room.room_type=="Double Room" %}
+                        selected
+                        {% endif %}>
+                            Double Room
+                        </option>
+
+                        <option
+                        {% if room.room_type=="Flat" %}
+                        selected
+                        {% endif %}>
+                            Flat
+                        </option>
+
+                        <option
+                        {% if room.room_type=="Shared Room" %}
+                        selected
+                        {% endif %}>
+                            Shared Room
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Facilities
+                    </label>
+
+                    <input
+                    type="text"
+                    name="facilities"
+                    class="form-control"
+                    value="{{ room.facilities }}">
+
+                </div>
+
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea
+                    name="description"
+                    rows="5"
+                    class="form-control">{{ room.description }}</textarea>
+
+                </div>
+
+            </div>
+
+            <div class="edit-actions">
+
+                <a href="/owner/rooms"
+                   class="btn btn-outline-secondary">
+
+                    Cancel
+
+                </a>
+
+                <button
+                type="submit"
+                class="btn btn-primary">
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

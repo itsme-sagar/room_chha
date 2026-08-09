@@ -1,55 +1,419 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3 class="mb-4">Find Rooms Anywhere in Nepal</h3>
 
-<!-- SEARCH BAR -->
-<form action="/search" method="GET" class="mb-5">
-  <div class="input-group input-group-lg">
-    <input type="text" name="q" class="form-control"
-           placeholder="Search city or area (Kathmandu, Pokhara...)">
-    <button class="btn btn-primary">Search</button>
-  </div>
-</form>
+<div class="container-fluid py-4">
 
-<!-- CITY CARDS -->
-<div class="row">
+```
+<!-- HERO SECTION -->
 
-  {% set cities = [
-    ("Kathmandu","https://images.unsplash.com/photo-1544717305-2782549b5136"),
-    ("Pokhara","https://images.unsplash.com/photo-1602607281035-2b9c8f3dcb8c"),
-    ("Butwal","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"),
-    ("Bharatpur","https://images.unsplash.com/photo-1503264116251-35a269479413")
-  ] %}
+<div class="renter-hero mb-5">
 
-  {% for city, img in cities %}
-  <div class="col-md-3 mb-4">
-    <div class="card shadow-sm h-100 city-card"
-         style="cursor:pointer"
-         onclick="location.href='/rooms/{{ city }}'">
-      <img src="{{ img }}" class="card-img-top"
-           height="160" style="object-fit:cover">
-      <div class="card-body text-center">
-        <h5 class="mb-0">{{ city }}</h5>
-      </div>
+    <div class="row align-items-center">
+
+        <div class="col-md-8">
+
+            <h1>
+
+                Welcome Back,
+                {{ session.get("name","User") }}
+
+                <i class="bi bi-emoji-smile-fill text-warning"></i>
+
+            </h1>
+
+            <p class="text-muted mb-0">
+
+                Discover verified rooms, manage applications and
+                connect with property owners across Nepal.
+
+            </p>
+
+        </div>
+
+        <div class="col-md-4 text-end">
+
+            {% if session.get("profile_image")
+                  and session.get("profile_image") != "default.png" %}
+
+            <img
+            src="{{ url_for('static',
+            filename='uploads/profiles/' + session.get('profile_image')) }}"
+            class="renter-dashboard-avatar">
+
+            {% else %}
+
+            <div class="renter-dashboard-placeholder">
+
+                {{ session.get("name","U")[0] }}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
     </div>
-  </div>
-  {% endfor %}
 
 </div>
+
+<!-- STATS -->
+
+<div class="row g-4 mb-5">
+
+    <div class="col-md-4">
+
+        <div class="renter-stat-card">
+
+            <i class="bi bi-heart-fill"></i>
+
+            <h3>{{ favorite_count }}</h3>
+
+            <p>Saved Rooms</p>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="renter-stat-card">
+
+            <i class="bi bi-file-earmark-check-fill"></i>
+
+            <h3>{{ application_count }}</h3>
+
+            <p>Applications</p>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+    <a
+    href="/messages"
+    class="text-decoration-none">
+
+        <div class="renter-stat-card">
+
+            <i class="bi bi-chat-dots-fill"></i>
+
+            <h3>{{ unread_messages }}</h3>
+
+            <p>Unread Messages</p>
+
+            <small class="text-primary">
+
+                Open Inbox →
+
+            </small>
+
+        </div>
+
+    </a>
+
+</div>
+
+</div>
+
+<!-- SEARCH -->
+
+<form action="/search" method="GET" class="mb-5">
+
+    <div class="input-group input-group-lg">
+
+        <input
+        type="text"
+        name="q"
+        class="form-control"
+        placeholder="Search city or area...">
+
+        <button class="btn btn-primary">
+
+            <i class="bi bi-search"></i>
+            Search
+
+        </button>
+
+    </div>
+
+</form>
+
+<!-- CITIES -->
+
+<h3 class="mb-4">
+
+    <i class="bi bi-geo-alt-fill text-primary"></i>
+
+    Browse Cities
+
+</h3>
+
+<div class="row">
+
+    {% for city in cities %}
+
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+
+        <div
+        class="card shadow-sm h-100 city-card"
+        style="cursor:pointer"
+        onclick="location.href='/rooms/{{ city }}'">
+
+            <img
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa"
+            class="card-img-top"
+            height="180"
+            style="object-fit:cover">
+
+            <div class="card-body text-center">
+
+                <h5 class="mb-0">
+
+                    {{ city }}
+
+                </h5>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- RECOMMENDED ROOMS -->
 
 <hr class="my-5">
 
+<h3 class="mb-4">
+
+    <i class="bi bi-stars text-warning"></i>
+
+    Recommended Rooms
+
+</h3>
+
 <div class="row">
-  <div class="col-md-6">
-    <a href="/renter/applications" class="btn btn-outline-success w-100">
-      My Applications
+
+    {% for room in recommended_rooms %}
+
+    {% set imgs = room.images.split(",") if room.images else [] %}
+
+    <div class="col-lg-4 mb-4">
+
+        <div class="recommended-room-card">
+
+            {% if imgs %}
+
+            <img
+            src="{{ url_for('static',
+            filename='uploads/rooms/' + imgs[0]) }}"
+            class="recommended-room-img">
+
+            {% else %}
+
+            <img
+            src="{{ url_for('static',
+            filename='uploads/default_room.png') }}"
+            class="recommended-room-img">
+
+            {% endif %}
+
+            <div class="p-4">
+
+    {% if room.featured %}
+    <span class="dashboard-featured-badge">
+
+        <i class="bi bi-stars"></i>
+
+        Premium Featured
+
+    </span>
+    {% endif %}
+
+    <div class="room-type-chip mb-2">
+
+        {{ room.room_type }}
+
+    </div>
+
+    <h4>
+
+        {{ room.title or room.area }}
+
+    </h4>
+
+    <p class="text-muted">
+
+        <i class="bi bi-geo-alt-fill"></i>
+
+        {{ room.area }}, {{ room.city }}
+
+    </p>
+
+    <div class="dashboard-room-price">
+
+        Rs. {{ "{:,}".format(room.rent or 0) }}
+
+        <span>/ month</span>
+
+    </div>
+
+    <div class="dashboard-room-info">
+
+        <span>
+
+            <i class="bi bi-people-fill"></i>
+
+            {{ room.room_capacity }}
+
+        </span>
+
+        <span>
+
+            <i class="bi bi-droplet-fill"></i>
+
+            {{ room.bathroom_count }}
+
+        </span>
+
+        <span>
+
+            <i class="bi bi-rulers"></i>
+
+            {{ room.room_size or "N/A" }}
+
+        </span>
+
+    </div>
+
+    <div class="dashboard-room-features">
+
+        {% if room.furnished %}
+        <span>🛏 Furnished</span>
+        {% endif %}
+
+        {% if room.parking_available %}
+        <span>🚗 Parking</span>
+        {% endif %}
+
+        {% if room.kitchen_available %}
+        <span>🍳 Kitchen</span>
+        {% endif %}
+
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+
+    <a href="/room/{{ room.id }}"
+       class="btn btn-outline-primary">
+
+        <i class="bi bi-eye-fill"></i>
+
+        View Details
+
     </a>
-  </div>
-  <!-- <div class="col-md-6">
-    <a href="/profile" class="btn btn-outline-dark w-100">
-      My Profile
+
+    <a href="/apply/{{ room.id }}"
+       class="btn btn-success">
+
+        <i class="bi bi-send-fill"></i>
+
+        Apply Now
+
     </a>
-  </div> -->
+
 </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- QUICK ACTIONS -->
+
+<hr class="my-5">
+
+<h3 class="mb-4">
+
+    <i class="bi bi-lightning-fill text-warning"></i>
+
+    Quick Actions
+
+</h3>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+
+        <a href="/renter/applications"
+           class="quick-action-btn">
+
+            <i class="bi bi-file-earmark-check-fill"></i>
+
+            <div class="mt-2">
+                My Applications
+            </div>
+
+        </a>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <a href="/favorites"
+           class="quick-action-btn">
+
+            <i class="bi bi-heart-fill"></i>
+
+            <div class="mt-2">
+                Saved Rooms
+            </div>
+
+        </a>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <a href="/messages"
+           class="quick-action-btn">
+
+            <i class="bi bi-chat-dots-fill"></i>
+
+            <div class="mt-2">
+                Messages
+            </div>
+
+        </a>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <a href="/profile"
+           class="quick-action-btn">
+
+            <i class="bi bi-person-fill"></i>
+
+            <div class="mt-2">
+                My Profile
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+</div>
+
 {% endblock %}

@@ -1,89 +1,666 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-{# --------- PREPARE IMAGE LIST SAFELY --------- #}
 {% set imgs = room.images.split(",") if room.images else [] %}
 
-<div class="row mb-4">
+<div class="container-fluid px-4 px-lg-5 py-4">
 
-  <!-- LEFT: IMAGE GALLERY -->
-  <div class="col-md-7">
-    <div class="card shadow-sm p-3">
+<div class="row">
 
-      {% if imgs %}
-        <div class="row">
-          {% for img in imgs %}
-            <div class="col-md-4 mb-3">
-              <img
-                src="{{ url_for('static', filename='uploads/rooms/' + img) }}"
-                class="img-fluid rounded shadow-sm"
-                style="height:200px; object-fit:cover;">
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
+    <!-- LEFT CONTENT -->
+
+    <div class="col-lg-9">
+
+        {% if imgs %}
+
+<img
+id="mainImage"
+src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
+class="room-hero-img mb-3">
+
+<div class="row">
+
+    {% for img in imgs %}
+
+    <div class="col-3 mb-3">
+
         <img
-          src="{{ url_for('static', filename='uploads/default_room.png') }}"
-          class="img-fluid rounded shadow-sm"
-          style="height:300px; object-fit:cover;">
-      {% endif %}
+        src="{{ url_for('static', filename='uploads/rooms/' + img) }}"
+        class="thumbnail-img"
+        onclick="changeImage(this.src)">
 
     </div>
-  </div>
 
-  <!-- RIGHT: ROOM DETAILS -->
-  <div class="col-md-5">
-    <div class="card shadow-sm p-4">
-
-      <span class="badge bg-primary mb-2">{{ room.city }}</span>
-
-      <h3 class="mb-2">{{ room.area }}</h3>
-
-      <h4 class="text-success mb-3">
-        Rs. {{ room.rent }}
-        <small class="text-muted fs-6">/ month</small>
-      </h4>
-
-      <p class="mb-1">
-        <strong>Room Type:</strong> {{ room.room_type }}
-      </p>
-
-      <p class="mb-3">
-        <strong>Facilities:</strong><br>
-        {{ room.facilities or "Not specified" }}
-      </p>
-
-      {% if room.description %}
-        <p class="text-muted">
-          {{ room.description }}
-        </p>
-      {% endif %}
-
-      <hr>
-
-      <!-- OWNER INFO -->
-      <div class="mb-3">
-        <strong>Owner:</strong><br>
-        {{ owner.name }}<br>
-        <small class="text-muted">{{ owner.email }}</small>
-      </div>
-
-      <!-- ACTIONS -->
-      {% if session.get("role") == "renter" %}
-        {% if app_status == "accepted" %}
-          <a href="/chat/{{ room.id }}" class="btn btn-outline-primary w-100">
-            💬 Chat with Owner
-          </a>
-        {% else %}
-          <button class="btn btn-outline-secondary w-100" disabled>
-            Chat available after approval
-          </button>
-        {% endif %}
-      {% endif %}
-
-    </div>
-  </div>
+    {% endfor %}
 
 </div>
+
+{% else %}
+
+<img
+src="{{ url_for('static', filename='uploads/default_room.png') }}"
+class="room-hero-img mb-4">
+
+{% endif %}
+
+<div class="detail-card">
+
+    <div class="room-header">
+
+        <div class="listing-badges">
+
+            {% if room.featured %}
+
+                <span class="verified-badge">
+
+                    <i class="bi bi-patch-check-fill"></i>
+
+                    RoomChha Verified
+
+                </span>
+
+                <span class="featured-badge">
+
+                    <i class="bi bi-stars"></i>
+
+                    RoomChha Premium Featured
+
+                </span>
+
+            {% else %}
+
+                <span class="verified-badge">
+
+                    <i class="bi bi-patch-check-fill"></i>
+
+                    RoomChha Verified
+
+                </span>
+
+            {% endif %}
+
+        </div>
+
+        <h1 class="room-title">
+
+            {{ room.title or room.area }}
+
+        </h1>
+
+        <p class="room-location">
+
+            <i class="bi bi-geo-alt-fill"></i>
+
+            {{ room.area }}, {{ room.city }}
+
+        </p>
+
+    </div>
+
+    <div class="property-stats mb-4">
+
+        <span class="stat-pill">
+
+            <i class="bi bi-eye-fill"></i>
+
+            Popular Listing
+
+        </span>
+
+        <span class="stat-pill">
+
+            <i class="bi bi-heart-fill"></i>
+
+            Saved by Users
+
+        </span>
+
+        <span class="stat-pill">
+
+            <i class="bi bi-calendar-check-fill"></i>
+
+            Available Now
+
+        </span>
+
+    </div>
+            <hr>
+
+            <!-- PROPERTY HIGHLIGHTS -->
+
+            <h4 class="mb-4">
+                Property Highlights
+            </h4>
+
+            <div class="highlights-grid">
+
+    <div class="modern-highlight-card">
+
+        <i class="bi bi-house-door-fill"></i>
+
+        <h5>{{ room.room_type }}</h5>
+
+        <span>Room Type</span>
+
+    </div>
+
+    <div class="modern-highlight-card">
+
+        <i class="bi bi-people-fill"></i>
+
+        <h5>{{ room.room_capacity }}</h5>
+
+        <span>Capacity</span>
+
+    </div>
+
+    <div class="modern-highlight-card">
+
+        <i class="bi bi-droplet-fill"></i>
+
+        <h5>{{ room.bathroom_count }}</h5>
+
+        <span>Bathrooms</span>
+
+    </div>
+
+    <div class="modern-highlight-card">
+
+        <i class="bi bi-rulers"></i>
+
+        <h5>{{ room.room_size or "N/A" }}</h5>
+
+        <span>Room Size</span>
+
+    </div>
+
+    <div class="modern-highlight-card">
+
+        <i class="bi bi-building"></i>
+
+        <h5>{{ room.building_type or "Residential" }}</h5>
+
+        <span>Building Type</span>
+
+    </div>
+
+    <div class="modern-highlight-card">
+
+        <i class="bi bi-layers-fill"></i>
+
+        <h5>{{ room.floor_number }}</h5>
+
+        <span>Floor Number</span>
+
+    </div>
+
+</div>
+    <h4 class="section-title mt-5">
+
+    <i class="bi bi-building-fill"></i>
+
+    Property Information
+
+</h4>
+
+<div class="modern-info-grid">
+
+    <div class="info-card">
+
+        <i class="bi bi-layers-fill"></i>
+
+        <span>Floor</span>
+
+        <h5>{{ room.floor_number }}</h5>
+
+    </div>
+
+    <div class="info-card">
+
+        <i class="bi bi-compass-fill"></i>
+
+        <span>Direction</span>
+
+        <h5>
+            {{ room.facing_direction or "N/A" }}
+        </h5>
+
+    </div>
+
+    <div class="info-card">
+
+        <i class="bi bi-droplet-half"></i>
+
+        <span>Attached Bath</span>
+
+        <h5>
+
+            {% if room.attached_bathroom %}
+                Yes
+            {% else %}
+                No
+            {% endif %}
+
+        </h5>
+
+    </div>
+
+    <div class="info-card">
+
+        <i class="bi bi-calendar-check-fill"></i>
+
+        <span>Available From</span>
+
+        <h5>
+
+            {{ room.available_from or "Immediate" }}
+
+        </h5>
+
+    </div>
+
+</div>
+
+            <!-- FACILITIES -->
+             
+
+            <h4 class="mt-4">
+                Facilities
+            </h4>
+
+            <div class="facility-grid">
+
+                {% if room.facilities %}
+
+                    {% for item in room.facilities.split(",") %}
+
+                    <div class="amenity-chip">
+
+    <i class="bi bi-check2-circle"></i>
+
+    {{ item.strip() }}
+
+</div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <p>
+                        Facilities not specified
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+    <h4 class="section-title mt-5">
+
+    <i class="bi bi-geo-alt-fill"></i>
+
+    Location & Address
+
+</h4>
+
+<div class="location-card">
+
+    <div class="location-header">
+
+        <i class="bi bi-pin-map-fill"></i>
+
+        <div>
+
+            <h5>
+                {{ room.city }}
+            </h5>
+
+            <small>
+
+                {{ room.district }},
+                {{ room.province }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <p>
+
+        {{ room.address or "Address not provided" }}
+
+    </p>
+
+    <div class="coming-soon-map">
+
+    <i class="bi bi-geo-alt-fill"></i>
+
+    <h5>Location Map</h5>
+
+    <p>
+        Interactive map coming soon
+    </p>
+
+</div>
+</div>
+            <!-- DESCRIPTION -->
+
+            <h4 class="section-title mt-5">
+
+    <i class="bi bi-card-text"></i>
+
+    About This Property
+
+</h4>
+
+<div class="description-card">
+
+    {{ room.description or "No description provided." }}
+
+</div>
+            <h4 class="section-title mt-5">
+
+    <i class="bi bi-people-fill"></i>
+
+    Tenant Preferences
+
+</h4>
+
+<div class="preference-grid">
+
+    <div class="preference-card">
+
+        <i class="bi bi-person-fill"></i>
+
+        {{ room.tenant_preference or "Anyone" }}
+
+    </div>
+
+    <div class="preference-card">
+
+        <i class="bi bi-gender-ambiguous"></i>
+
+        {{ room.gender_preference or "Any Gender" }}
+
+    </div>
+
+    <div class="preference-card">
+
+        <i class="bi bi-ban"></i>
+
+        {% if room.smoking_allowed %}
+            Smoking Allowed
+        {% else %}
+            No Smoking
+        {% endif %}
+
+    </div>
+
+    <div class="preference-card">
+
+        <i class="bi bi-heart-fill"></i>
+
+        {% if room.pets_allowed %}
+            Pets Allowed
+        {% else %}
+            No Pets
+        {% endif %}
+
+    </div>
+
+</div>
+        </div>
+
+        <!-- OWNER CARD -->
+
+        <div class="owner-card-v2 mt-4">
+
+            <div class="owner-top">
+
+                <div class="owner-avatar-v2">
+
+                    {{ owner.name[0] }}
+
+                </div>
+
+                <div>
+
+    <h5 class="mb-1">
+
+        {{ owner.name }}
+
+    </h5>
+
+    {% if owner.verified_owner %}
+
+    <span class="premium-owner-badge">
+
+        <i class="bi bi-patch-check-fill"></i>
+
+        Premium Verified Owner
+        <small class="roomchha-verified-text">
+
+    Verified by RoomChha
+
+</small>
+
+    </span>
+
+    {% else %}
+
+    <span class="normal-owner-badge">
+
+        Normal Verified Owner
+
+    </span>
+
+    {% endif %}
+
+</div>
+
+            </div>
+
+            <hr>
+
+            <p>
+
+                <i class="bi bi-envelope-fill"></i>
+
+                {{ owner.email }}
+
+            </p>
+            <p>
+
+    <i class="bi bi-telephone-fill"></i>
+
+    {{ room.owner_phone or "Not Provided" }}
+
+</p>
+
+        </div>
+
+        <!-- REVIEWS -->
+
+        <div class="review-box mt-4">
+
+            <h4>
+
+                <i class="bi bi-star-fill text-warning"></i>
+
+                Reviews
+
+            </h4>
+
+            <p class="text-muted">
+
+                No reviews yet.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+
+    <div class="col-lg-3">
+
+        <div class="sticky-card room-sidebar">
+
+            <div class="price-box">
+
+    <small class="text-uppercase">
+        Monthly Rent
+    </small>
+
+    <h2>
+
+    Rs. {{ "{:,}".format(room.rent or 0) }}
+
+</h2>
+
+{% if room.deposit_amount %}
+
+<p>
+
+    Deposit:
+    Rs. {{ "{:,}".format(room.deposit_amount) }}
+
+</p>
+
+{% endif %}
+
+    <p class="mb-3">
+        Per Month
+    </p>
+
+    <div class="listing-features">
+
+        <div>
+            <i class="bi bi-patch-check-fill text-success"></i>
+            Verified Listing
+        </div>
+
+        <div>
+            <i class="bi bi-shield-check text-primary"></i>
+            Secure Platform
+        </div>
+
+        <div>
+            <i class="bi bi-lightning-charge-fill text-warning"></i>
+            Instant Apply
+        </div>
+
+    </div>
+
+</div>
+
+            <div class="detail-card">
+
+                <a
+                href="/favorite/{{ room.id }}"
+                class="btn btn-outline-danger w-100">
+
+                    <i class="bi bi-heart-fill"></i>
+
+                    Save Room
+
+                </a>
+
+                <a
+                class="btn btn-outline-secondary w-100 mt-2">
+
+                    <i class="bi bi-share-fill"></i>
+
+                    Share Listing
+
+                </a>
+
+                {% if session.get("role") == "renter" %}
+
+    {% if app_status == "accepted" %}
+
+    <a
+    href="/chat/{{ room.id }}"
+    class="btn btn-success w-100 mt-3">
+
+        <i class="bi bi-chat-dots-fill"></i>
+
+        Chat Owner
+
+    </a>
+
+    {% elif app_status == "pending" %}
+
+    <button
+    class="btn btn-warning w-100 mt-3"
+    disabled>
+
+        <i class="bi bi-hourglass-split"></i>
+
+        Application Pending
+
+    </button>
+
+    {% elif app_status == "rejected" %}
+
+    <button
+    class="btn btn-danger w-100 mt-3"
+    disabled>
+
+        <i class="bi bi-x-circle-fill"></i>
+
+        Application Rejected
+
+    </button>
+
+    {% else %}
+
+    <a
+    href="/apply/{{ room.id }}"
+    class="btn btn-primary w-100 mt-3">
+
+        <i class="bi bi-send-fill"></i>
+
+        Apply Now
+
+    </a>
+
+    {% endif %}
+
+{% elif not session.get("user_id") %}
+
+    <a
+    href="/login"
+    class="btn btn-primary w-100 mt-3">
+
+        <i class="bi bi-box-arrow-in-right"></i>
+
+        Login to Apply
+
+    </a>
+
+{% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<script>
+
+function changeImage(src){
+    document.getElementById("mainImage").src = src;
+}
+
+</script>
 
 {% endblock %}

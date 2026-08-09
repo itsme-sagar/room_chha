@@ -1,0 +1,743 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- HERO -->
+
+    <!-- =========================================
+     OWNER DASHBOARD HERO
+========================================= -->
+
+<div class="owner-dashboard-hero">
+
+    <div class="owner-hero-left">
+
+        <span class="owner-dashboard-tag">
+
+            ROOMCHHA OWNER CENTER
+        </span>
+
+        <h1>
+
+            Welcome Back,
+
+            {{ current_user.name }} 👋
+
+        </h1>
+
+        <p>
+
+            Manage rooms, track promotions,
+            monitor applications and grow
+            your property business.
+
+        </p>
+
+        <div class="owner-quick-stats">
+
+            <div class="quick-item">
+
+                <h3>
+
+                    {{ total_rooms }}
+
+                </h3>
+
+                <span>
+
+                    Rooms
+
+                </span>
+
+            </div>
+
+            <div class="quick-item">
+
+                <h3>
+
+                    {{ featured_rooms }}
+
+                </h3>
+
+                <span>
+
+                    Featured
+
+                </span>
+
+            </div>
+
+            <div class="quick-item">
+
+                <h3>
+
+                    Rs. {{ wallet_balance }}
+
+                </h3>
+
+                <span>
+
+                    Wallet
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="owner-hero-buttons">
+
+            <a
+            href="/owner/add-room"
+            class="btn btn-light btn-lg">
+
+                <i class="bi bi-plus-circle-fill"></i>
+
+                Add Room
+
+            </a>
+
+            <a
+            href="/owner/wallet"
+            class="btn btn-warning btn-lg">
+
+                <i class="bi bi-wallet2"></i>
+
+                Wallet
+
+            </a>
+
+            <a
+            href="/profile"
+            class="btn btn-outline-light btn-lg">
+
+                <i class="bi bi-person-circle"></i>
+
+                Profile
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="owner-hero-right">
+
+        <div class="owner-profile-card">
+
+            <img
+            src="{% if current_user.profile_image %}
+            {{ url_for('static',
+            filename='uploads/profiles/' + current_user.profile_image) }}
+            {% else %}
+            {{ url_for('static',
+            filename='uploads/default.png') }}
+            {% endif %}"
+
+            class="owner-profile-image">
+
+            <h4>
+
+                {{ current_user.name }}
+
+            </h4>
+
+            <p>
+
+                {{ current_user.email }}
+
+            </p>
+
+            {% if current_user.verified_owner %}
+
+            <span class="owner-premium-badge">
+
+                <i class="bi bi-patch-check-fill"></i>
+
+                Premium Verified
+
+            </span>
+
+            {% endif %}
+
+            <div class="wallet-mini-card">
+
+                <small>
+
+                    Wallet Balance
+
+                </small>
+
+                <h3>
+
+                    Rs. {{ wallet_balance }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- STATS -->
+
+    <div class="row g-4 owner-stats-row">
+
+    <div class="col-lg-2 col-md-4">
+
+        <div class="dashboard-mini-card">
+
+            <i class="bi bi-house-fill"></i>
+
+            <h2>
+
+                {{ total_rooms }}
+
+            </h2>
+
+            <span>
+
+                Total Rooms
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+
+        <div class="dashboard-mini-card approved">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            <h2>
+
+                {{ approved_rooms }}
+
+            </h2>
+
+            <span>
+
+                Approved
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+
+        <div class="dashboard-mini-card pending">
+
+            <i class="bi bi-clock-fill"></i>
+
+            <h2>
+
+                {{ pending_rooms }}
+
+            </h2>
+
+            <span>
+
+                Pending
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+
+        <div class="dashboard-mini-card featured">
+
+            <i class="bi bi-stars"></i>
+
+            <h2>
+
+                {{ featured_rooms }}
+
+            </h2>
+
+            <span>
+
+                Featured
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+
+        <div class="dashboard-mini-card wallet">
+
+            <i class="bi bi-wallet2"></i>
+
+            <h2>
+
+                Rs. {{ wallet_balance }}
+
+            </h2>
+
+            <span>
+
+                Wallet
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+
+        <div class="dashboard-mini-card apps">
+
+            <i class="bi bi-file-earmark-text-fill"></i>
+
+            <h2>
+
+                0
+
+            </h2>
+
+            <span>
+
+                Applications
+
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- =========================================
+     SEARCH + FILTER BAR
+========================================= -->
+
+<div class="owner-toolbar">
+
+    <div class="owner-toolbar-header">
+
+        <div>
+
+            <h3>
+
+                <i class="bi bi-buildings-fill"></i>
+
+                My Properties
+
+            </h3>
+
+            <p>
+
+                Search, filter and manage your listings.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a
+            href="/owner/add-room"
+            class="btn btn-primary">
+
+                <i class="bi bi-plus-circle-fill"></i>
+
+                New Room
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <form
+    method="GET"
+    class="owner-search-form">
+
+        <div class="row g-3">
+
+            <div class="col-lg-5">
+
+                <div class="search-box">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Search area, city or room type">
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3">
+
+                <select
+                name="city"
+                class="form-select">
+
+                    <option value="">
+
+                        All Cities
+
+                    </option>
+
+                    {% for city in cities %}
+
+                    <option
+                    value="{{ city }}"
+                    {% if selected_city == city %}
+                    selected
+                    {% endif %}>
+
+                        {{ city }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="col-lg-2">
+
+                <button
+                type="submit"
+                class="btn btn-primary w-100">
+
+                    Search
+
+                </button>
+
+            </div>
+
+            <div class="col-lg-2">
+
+                <a
+                href="/owner/rooms"
+                class="btn btn-outline-secondary w-100">
+
+                    Reset
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+        <!-- ROOMS -->
+
+    <div class="row mt-4">
+
+        {% if rooms %}
+
+            {% for room in rooms %}
+
+            {% set imgs = room.images.split(",") if room.images else [] %}
+
+            <div class="col-lg-4 col-md-6 mb-4">
+
+                <div class="owner-room-card">
+
+                    <!-- IMAGE -->
+
+                    <div class="room-image-wrapper">
+
+                        {% if imgs %}
+
+                        <img
+                        src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
+                        class="owner-room-img">
+
+                        {% else %}
+
+                        <img
+                        src="{{ url_for('static', filename='uploads/default_room.png') }}"
+                        class="owner-room-img">
+
+                        {% endif %}
+
+                        <!-- BADGES -->
+
+                        <div class="room-top-badges">
+
+                            {% if room.featured %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                ⭐ Featured
+
+                            </span>
+
+                            {% endif %}
+
+                            {% if room.approved %}
+
+                            <span class="badge bg-success">
+
+                                Approved
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Pending
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <!-- BODY -->
+
+                    <div class="room-card-body">
+
+                        <h5>
+
+                            {{ room.area }}
+
+                        </h5>
+
+                        <p class="text-muted mb-2">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                            {{ room.city }}
+
+                        </p>
+
+                        <div class="room-price">
+
+                            Rs. {{ room.rent }}
+
+                        </div>
+                        <div class="room-features">
+
+    <span class="feature-pill">
+        <i class="bi bi-rulers"></i>
+        {{ room.room_size or 0 }} sqft
+    </span>
+
+    <span class="feature-pill">
+        <i class="bi bi-people-fill"></i>
+        {{ room.room_capacity }}
+    </span>
+
+    <span class="feature-pill">
+        <i class="bi bi-droplet-fill"></i>
+        {{ room.bathroom_count }}
+    </span>
+
+</div>
+
+<div class="room-extra-details">
+
+    <p>
+        <strong>Building:</strong>
+        {{ room.building_type or "N/A" }}
+    </p>
+
+    <p>
+        <strong>Facing:</strong>
+        {{ room.facing_direction or "N/A" }}
+    </p>
+
+    <p>
+        <strong>Bathroom:</strong>
+        {% if room.attached_bathroom %}
+            Attached
+        {% else %}
+            Common
+        {% endif %}
+    </p>
+
+</div>
+
+                        <div class="room-meta">
+                            {% if room.facilities %}
+
+<div class="facility-tags">
+
+{% for item in room.facilities.split(",") %}
+
+<span class="facility-badge">
+
+    {{ item }}
+
+</span>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+                            <span>
+
+                                <i class="bi bi-house"></i>
+
+                                {{ room.room_type }}
+
+                            </span>
+
+                        </div>
+
+                        {% if room.featured_until %}
+
+                        <div class="featured-expiry">
+
+                            <i class="bi bi-calendar-check"></i>
+
+                            Featured Until:
+
+                            {{ room.featured_until.strftime('%d %b %Y') }}
+
+                        </div>
+
+                        {% endif %}
+
+                        <!-- ACTION BUTTONS -->
+
+                        <div class="room-action-buttons">
+
+                            <a
+                            href="/room/{{ room.id }}"
+                            class="btn btn-primary">
+
+                                <i class="bi bi-eye-fill"></i>
+
+                                View
+
+                            </a>
+
+                            <a
+                            href="/owner/edit-room/{{ room.id }}"
+                            class="btn btn-success">
+
+                                <i class="bi bi-pencil-fill"></i>
+
+                                Edit
+
+                            </a>
+
+                        </div>
+
+                        <div class="room-action-buttons mt-2">
+
+                            {% if room.featured %}
+
+                            <button
+                            class="btn btn-warning w-100"
+                            disabled>
+
+                                ⭐ Already Featured
+
+                            </button>
+
+                            {% else %}
+
+                            <a
+                            href="/request-feature-room/{{ room.id }}"
+                            class="btn btn-warning w-100">
+
+                                <i class="bi bi-stars"></i>
+
+                                Promote Room (Rs.299)
+
+                            </a>
+
+                            {% endif %}
+
+                        </div>
+
+                        <div class="room-action-buttons mt-2">
+
+                            <a
+                            href="/owner/delete-room/{{ room.id }}"
+                            class="btn btn-outline-danger w-100"
+                            onclick="return confirm('Delete this room permanently?')">
+
+                                <i class="bi bi-trash-fill"></i>
+
+                                Delete Room
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+        <!-- EMPTY STATE -->
+
+        <div class="col-12">
+
+            <div class="empty-room-state">
+
+                <i class="bi bi-house-x-fill"></i>
+
+                <h3>
+
+                    No Rooms Found
+
+                </h3>
+
+                <p>
+
+                    You haven't added any rooms yet.
+
+                </p>
+
+                <a
+                href="/owner/add-room"
+                class="btn btn-primary">
+
+                    <i class="bi bi-plus-circle-fill"></i>
+
+                    Add Your First Room
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

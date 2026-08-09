@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+
+<h2 class="mb-4">
+
+<i class="bi bi-bell-fill"></i>
+
+Notifications
+
+</h2>
+
+{% for n in notes %}
+
+<a
+href="{{ n.link }}"
+class="card p-3 mb-3 text-decoration-none">
+
+{{ n.message }}
+
+</a>
+
+{% else %}
+
+<div class="alert alert-info">
+
+No Notifications Yet
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

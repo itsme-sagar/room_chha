@@ -1,60 +1,242 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3 class="mb-4">My Room Applications</h3>
 
-{% for app, room in apps %}
-<div class="card shadow-sm mb-3">
-  <div class="card-body">
+<div class="container py-4">
 
-    <div class="row align-items-center">
+    <!-- PAGE HEADER -->
 
-      <!-- Room Info -->
-      <div class="col-md-5">
-        <h5 class="mb-1">{{ room.area }}, {{ room.city }}</h5>
-        <small class="text-muted">Rs. {{ room.rent }} / month</small>
-      </div>
+    <div class="applications-header">
 
-      <!-- Status -->
-      <div class="col-md-3">
-        {% if app.status == "pending" %}
-          <span class="badge bg-warning">Pending</span>
-        {% elif app.status == "accepted" %}
-          <span class="badge bg-success">Accepted</span>
-        {% else %}
-          <span class="badge bg-danger">Rejected</span>
-        {% endif %}
-      </div>
+        <h2>
+            <i class="bi bi-file-earmark-check-fill text-primary"></i>
+            My Applications
+        </h2>
 
-      <!-- Action -->
-      <div class="col-md-4 text-end">
-        {% if app.status == "pending" %}
-          <small class="text-muted">
-            Waiting for owner response
-          </small>
-
-        {% elif app.status == "accepted" %}
-          <a href="/chat/{{ room.id }}"
-             class="btn btn-primary btn-sm position-relative">
-            Chat
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              New
-            </span>
-          </a>
-
-        {% else %}
-          <small class="text-muted">
-            You can apply to other rooms
-          </small>
-        {% endif %}
-      </div>
+        <p class="text-muted">
+            Track all your room applications in one place.
+        </p>
 
     </div>
 
-  </div>
+    {% if apps %}
+
+    <div class="row">
+
+        {% for app, room in apps %}
+
+        {% set imgs = room.images.split(",") if room.images else [] %}
+
+        <div class="col-12 mb-4">
+
+            <div class="application-card">
+
+                <div class="row align-items-center">
+
+                    <!-- ROOM IMAGE -->
+
+                    <div class="col-lg-3">
+
+                        {% if imgs %}
+
+                        <img
+                        src="{{ url_for('static', filename='uploads/rooms/' + imgs[0]) }}"
+                        class="application-room-image">
+
+                        {% else %}
+
+                        <img
+                        src="{{ url_for('static', filename='uploads/default_room.png') }}"
+                        class="application-room-image">
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- ROOM DETAILS -->
+
+                    <div class="col-lg-4">
+
+                        <h4 class="mb-2">
+                            {{ room.area }}
+                        </h4>
+
+                        <p class="text-muted mb-2">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+                            {{ room.city }}
+
+                        </p>
+
+                        <h5 class="text-primary">
+
+                            Rs. {{ room.rent }}
+
+                        </h5>
+
+                    </div>
+
+                    <!-- STATUS -->
+
+                    <div class="col-lg-2 text-center">
+
+                        {% if app.status == "pending" %}
+
+                        <span class="status-badge pending">
+
+                            <i class="bi bi-clock-fill"></i>
+                            Pending
+
+                        </span>
+
+                        {% elif app.status == "accepted" %}
+
+                        <span class="status-badge accepted">
+
+                            <i class="bi bi-patch-check-fill"></i>
+                            Approved
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="status-badge rejected">
+
+                            <i class="bi bi-x-circle-fill"></i>
+                            Rejected
+
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- ACTIONS -->
+
+                    <div class="col-lg-3 text-center">
+
+                        {% if app.status == "pending" %}
+
+                        <div class="timeline-status">
+
+                            <i class="bi bi-hourglass-split"></i>
+
+                            Waiting for Owner Review
+
+                        </div>
+
+                        {% elif app.status == "accepted" %}
+
+<div class="mb-2 text-success fw-bold">
+
+    🎉 Application Approved
+
 </div>
+
+{% if room.owner.verified_owner %}
+
+<div class="mb-2">
+
+    <span class="premium-owner-badge">
+
+        <i class="bi bi-patch-check-fill"></i>
+
+        Premium Verified Owner
+
+    </span>
+
+    <div>
+
+        <small class="roomchha-verified-text">
+
+            Verified by RoomChha
+
+        </small>
+
+    </div>
+
+</div>
+
 {% else %}
-<p>You have not applied to any rooms yet.</p>
-{% endfor %}
+
+<div class="mb-2">
+
+    <span class="normal-owner-badge">
+
+        Verified Owner
+
+    </span>
+
+</div>
+
+{% endif %}
+
+<a
+href="/chat/{{ room.id }}"
+class="btn btn-primary">
+
+    <i class="bi bi-chat-dots-fill"></i>
+
+    Chat Owner
+
+</a>
+
+                        {% else %}
+
+                        <div class="text-muted">
+
+                            Application Declined
+
+                        </div>
+
+                        <a
+                        href="/rooms/{{ room.city }}"
+                        class="btn btn-outline-primary btn-sm mt-2">
+
+                            Browse More Rooms
+
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <i class="bi bi-house-heart-fill"></i>
+
+        <h3>
+            No Applications Yet
+        </h3>
+
+        <p>
+            Start exploring rooms and apply to your favorite listings.
+        </p>
+
+        <a
+        href="/renter/dashboard"
+        class="btn btn-primary">
+
+            Browse Rooms
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+<div class="row justify-content-center">
+
+<div class="col-md-6">
+
+<div class="card shadow-lg border-0 rounded-4 p-5">
+
+<h2 class="text-center mb-3">
+
+Welcome to Room Chha
+
+</h2>
+
+<p class="text-center text-muted">
+
+Choose how you want to use Room Chha.
+
+</p>
+
+<form method="POST">
+
+<div class="d-grid gap-3 mt-4">
+
+<button
+class="btn btn-primary btn-lg"
+name="role"
+value="renter">
+
+🏠 I'm Looking for a Room
+
+</button>
+
+<button
+class="btn btn-success btn-lg"
+name="role"
+value="owner">
+
+🏢 I Want to Rent Out My Rooms
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

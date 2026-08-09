@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+
+<h2 class="mb-4">
+
+    <i class="bi bi-stars text-warning"></i>
+
+    Featured Room Requests
+
+</h2>
+
+<div class="card shadow-sm">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>Room</th>
+<th>Owner</th>
+<th>City</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for req, room, owner in requests %}
+
+<tr>
+
+<td>
+
+    {{ room.area }}
+
+</td>
+
+<td>
+
+    {{ owner.name }}
+
+</td>
+
+<td>
+
+    {{ room.city }}
+
+</td>
+
+<td>
+
+    {{ req.status }}
+
+</td>
+
+<td>
+
+{% if req.status == "pending" %}
+
+<a
+href="/admin/approve-featured/{{ req.id }}"
+class="btn btn-success btn-sm">
+
+Approve
+
+</a>
+
+<a
+href="/admin/reject-featured/{{ req.id }}"
+class="btn btn-danger btn-sm">
+
+Reject
+
+</a>
+
+{% else %}
+
+-
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}
