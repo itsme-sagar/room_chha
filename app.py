@@ -237,62 +237,62 @@ def notify_matching_users(room):
 
 # ================= AUTO PREMIUM EXPIRY =================
 
-@app.before_request
-def check_premium_expiry():
+# @app.before_request
+# def check_premium_expiry():
 
-    users = User.query.filter_by(
-        verified_owner=True
-    ).all()
+#     users = User.query.filter_by(
+#         verified_owner=True
+#     ).all()
 
-    for user in users:
+#     for user in users:
 
-        if (
-            user.premium_plan != "lifetime"
-            and user.premium_until
-            and user.premium_until < datetime.utcnow()
-        ):
+#         if (
+#             user.premium_plan != "lifetime"
+#             and user.premium_until
+#             and user.premium_until < datetime.utcnow()
+#         ):
 
-            user.verified_owner = False
+#             user.verified_owner = False
 
-            user.premium_plan = None
+#             user.premium_plan = None
 
-            user.premium_until = None
+#             user.premium_until = None
 
-            notify(
-                user.id,
-                "Your Premium Plan has expired.",
-                "/premium"
-            )
+#             notify(
+#                 user.id,
+#                 "Your Premium Plan has expired.",
+#                 "/premium"
+#             )
 
-    db.session.commit()
+#     db.session.commit()
 
 # ================= AUTO FEATURED EXPIRY =================
 
-@app.before_request
-def check_featured_expiry():
+# @app.before_request
+# def check_featured_expiry():
 
-    featured_rooms = Room.query.filter_by(
-        featured=True
-    ).all()
+#     featured_rooms = Room.query.filter_by(
+#         featured=True
+#     ).all()
 
-    for room in featured_rooms:
+#     for room in featured_rooms:
 
-        if (
-            room.featured_until
-            and room.featured_until < datetime.utcnow()
-        ):
+#         if (
+#             room.featured_until
+#             and room.featured_until < datetime.utcnow()
+#         ):
 
-            room.featured = False
+#             room.featured = False
 
-            room.featured_until = None
+#             room.featured_until = None
 
-            notify(
-                room.owner_id,
-                f"Featured status expired for room in {room.city}",
-                "/owner/rooms"
-            )
+#             notify(
+#                 room.owner_id,
+#                 f"Featured status expired for room in {room.city}",
+#                 "/owner/rooms"
+#             )
 
-    db.session.commit()
+#     db.session.commit()
 
 # ================= AUTH =================
 @app.route("/")
