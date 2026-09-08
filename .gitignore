@@ -20,3 +20,5 @@ instance/
 # OS files
 .DS_Store
 Thumbs.db
+# User/test uploaded room images
+static/uploads/rooms/*
