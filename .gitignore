@@ -22,3 +22,4 @@ instance/
 Thumbs.db
 # User/test uploaded room images
 static/uploads/rooms/*
+database/
